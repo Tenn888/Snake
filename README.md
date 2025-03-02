@@ -28,6 +28,12 @@ python main.py
 
 - Arrow keys to move the snake
 
+## Files
+
+- main.py responsible for the operation of the entire program
+- button_1.png, button_2.png, button_3.png rendering buttons in the menu
+- Music.mp3 - music in the background of the program
+
 
 ## Contributing
 
