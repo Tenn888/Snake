@@ -22,16 +22,10 @@ FPS = 5
 # Шрифт окна проигрыша
 FONT_END = pygame.font.SysFont(None, 40)
 # Текст проигрыша
-TEXT_END = FONT_END.render('Game over. Ваш счет: ', 1, (255, 255, 255))
+TEXT_END = FONT_END.render('Игра окончена. Ваш счет: ', 1, (255, 255, 255))
 TEXT_END_RECT = TEXT_END.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 30))
 FRAME_END = (255, 0, 0)
 
-###################### Текст победы
-FONT_WIN = pygame.font.SysFont(None, 40)
-TEXT_WIN = FONT_WIN.render('Победа! Ваш счет: 0', 1, (255, 255, 255))
-TEXT_WIN_RECT = TEXT_WIN.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 30))
-
-###################### Меню
 ###################### Меню
 B_1 = pygame.image.load('buttons/button_1.png')
 LVL_1 = pygame.transform.scale(B_1, (40, 40))
@@ -99,10 +93,6 @@ def random_food_block():
 
     return food_block
 
-def is_win():
-    'Проверка на выигыш'
-    return result == 10
-
 snake_rect = [Rect(9, 9), Rect(9, 10)]
 x_row = 0
 y_col = 1
@@ -135,7 +125,7 @@ while running:
 
         elif event.type == pygame.KEYDOWN:
 
-            if mode in ['end', 'win'] and event.key == pygame.K_r: # Сброс игры
+            if mode == 'end' and event.key == pygame.K_r:
                 # Сброс игры
                 snake_rect = [Rect(9, 9)]
                 food = random_food_block()
@@ -184,9 +174,6 @@ while running:
 
         if food == head:
             result += 1
-            if is_win():
-                pygame.mixer.music.pause()
-                mode = 'win'
             snake_rect.append(food)
             food = random_food_block()
 
@@ -204,14 +191,9 @@ while running:
 
     elif mode == 'end':
         app.fill(FRAME_END)
-        TEXT_END = FONT_END.render('GAME OVER. Ваш счет: ' + str(result), 1, (255, 255, 255))
+        TEXT_END = FONT_END.render('Игра окончена. Ваш счет: ' + str(result), 1, (255, 255, 255))
 
         app.blit(TEXT_END, TEXT_END_RECT)
-
-    elif mode == 'win':
-        app.fill((0, 220, 0))
-        TEXT_WIN = FONT_WIN.render('Победа! Ваш счет: ' + str(result), 1, (255, 255, 255))
-        app.blit(TEXT_WIN, TEXT_WIN_RECT)
 
     pygame.display.update()
     clock.tick(FPS)
