@@ -33,13 +33,13 @@ TEXT_WIN_RECT = TEXT_WIN.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 30))
 
 ###################### Меню
 ###################### Меню
-B_1 = pygame.image.load('button_1.png')
+B_1 = pygame.image.load('buttons/button_1.png')
 LVL_1 = pygame.transform.scale(B_1, (40, 40))
 LVL_1_RECT = LVL_1.get_rect(center=(WIDTH // 4, HEIGHT // 2))
-B_2 = pygame.image.load('button_2.png')
+B_2 = pygame.image.load('buttons/button_2.png')
 LVL_2 = pygame.transform.scale(B_2, (40, 40))
 LVL_2_RECT = LVL_2.get_rect(center=(WIDTH // 4 * 2, HEIGHT // 2))
-B_3 = pygame.image.load('button_3.png')
+B_3 = pygame.image.load('buttons/button_3.png')
 LVL_3 = pygame.transform.scale(B_3, (40, 40))
 LVL_3_RECT = LVL_3.get_rect(center=(WIDTH // 4 * 3, HEIGHT // 2))
 
