@@ -1,14 +1,11 @@
+# Импортируем библиотеки
 import pygame
 import random
 from variables import *
 
-pygame.init()
-
-# Инициализируем звуковой модуль
+# Инициализируем pygame и звуковой модуль
+pygame.init() 
 pygame.mixer.init()
-
-# Загружаем музыку
-pygame.mixer.music.load('Music.mp3')
 
 # Включаем проигрывание звука
 pygame.mixer.music.play(-1)
@@ -18,10 +15,6 @@ app = pygame.display.set_mode((WIDTH, HEIGHT))
 
 # Задаем название окна
 pygame.display.set_caption('Змейка')
-
-# Создаем переменную-флаг, которая отвечает за состояние цикла
-running = True
-mode = 'menu'
 
 # Функция рисования объектов
 def draw_rect(color, row, column):

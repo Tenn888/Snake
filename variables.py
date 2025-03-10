@@ -37,3 +37,10 @@ LVL_3_RECT = LVL_3.get_rect(center=(WIDTH // 4 * 3, HEIGHT // 2))
 B_AGAIN = pygame.image.load('buttons/button_again.png')
 AGAIN = pygame.transform.scale(B_AGAIN, (40, 40))
 AGAIN_RECT = AGAIN.get_rect(center=(WIDTH // 2, HEIGHT // 1.7))
+
+# Загружаем музыку
+pygame.mixer.music.load('Music.mp3')
+
+# Создаем переменную-флаг, которая отвечает за состояние цикла
+running = True
+mode = 'menu'
