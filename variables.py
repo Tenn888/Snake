@@ -1,4 +1,5 @@
-import pygame
+import pygame as rr
+pygame = rr
 pygame.init()
 
 # Прорисываем константы
@@ -38,9 +39,16 @@ B_AGAIN = pygame.image.load('buttons/button_again.png')
 AGAIN = pygame.transform.scale(B_AGAIN, (40, 40))
 AGAIN_RECT = AGAIN.get_rect(center=(WIDTH // 2, HEIGHT // 1.7))
 
+'''snake_rect = None
+x_row = None
+y_col = None
+food = None
+result = None
+mode = None'''
+
 # Загружаем музыку
 pygame.mixer.music.load('Music.mp3')
 
 # Создаем переменную-флаг, которая отвечает за состояние цикла
 running = True
-mode = 'menu'
+#mode = 'menu'
