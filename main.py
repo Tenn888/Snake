@@ -36,6 +36,9 @@ LVL_2_RECT = LVL_2.get_rect(center=(WIDTH // 4 * 2, HEIGHT // 2))
 B_3 = pygame.image.load('buttons/button_3.png')
 LVL_3 = pygame.transform.scale(B_3, (40, 40))
 LVL_3_RECT = LVL_3.get_rect(center=(WIDTH // 4 * 3, HEIGHT // 2))
+B_AGAIN = pygame.image.load('buttons/button_again.png')
+AGAIN = pygame.transform.scale(B_AGAIN, (40, 40))
+AGAIN_RECT = AGAIN.get_rect(center=(WIDTH // 2, HEIGHT // 1.7))
 
 # Инициализируем звуковой модуль
 pygame.mixer.init()
@@ -93,12 +96,19 @@ def random_food_block():
 
     return food_block
 
-snake_rect = [Rect(9, 9), Rect(9, 10)]
-x_row = 0
-y_col = 1
-food = random_food_block()
-result = 0
+# Функция начальных переменных игры
+def start_snake():
+    global snake_rect, x_row, y_col, food, result, mode
+    snake_rect = [Rect(9, 9), Rect(9, 10)]
+    x_row = 0
+    y_col = 1
+    food = random_food_block()
+    result = 0
+    mode = 'menu'
+
 text = pygame.font.SysFont('courier', 36)
+
+start_snake()
 
 clock = pygame.time.Clock()
 
@@ -194,6 +204,13 @@ while running:
         TEXT_END = FONT_END.render('Игра окончена. Ваш счет: ' + str(result), 1, (255, 255, 255))
 
         app.blit(TEXT_END, TEXT_END_RECT)
+        app.blit(AGAIN, AGAIN_RECT)
+
+        # Добавляем проверку события MOUSEBUTTONDOWN в режиме end
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if AGAIN_RECT.collidepoint(event.pos):
+                start_snake()
+                pygame.mixer.music.play(-1)
 
     pygame.display.update()
     clock.tick(FPS)
