@@ -20,17 +20,20 @@ FPS = 5
 
 # Загрузка кнопок
 B_1 = pygame.image.load('buttons/button_1.png')
-LVL_1 = pygame.transform.scale(B_1, (40, 40))
+LVL_1 = pygame.transform.scale(B_1, (40, 50))
 LVL_1_RECT = LVL_1.get_rect(center=(WIDTH // 4, HEIGHT // 2))
 B_2 = pygame.image.load('buttons/button_2.png')
-LVL_2 = pygame.transform.scale(B_2, (40, 40))
+LVL_2 = pygame.transform.scale(B_2, (40, 50))
 LVL_2_RECT = LVL_2.get_rect(center=(WIDTH // 4 * 2, HEIGHT // 2))
 B_3 = pygame.image.load('buttons/button_3.png')
-LVL_3 = pygame.transform.scale(B_3, (40, 40))
+LVL_3 = pygame.transform.scale(B_3, (40, 50))
 LVL_3_RECT = LVL_3.get_rect(center=(WIDTH // 4 * 3, HEIGHT // 2))
 B_AGAIN = pygame.image.load('buttons/button_again.png')
 AGAIN = pygame.transform.scale(B_AGAIN, (40, 40))
 AGAIN_RECT = AGAIN.get_rect(center=(WIDTH // 2, HEIGHT // 1.7))
+
+# Шрифт текста
+FONT = pygame.font.SysFont(None, 40)
 
 # Инициализируем звуковой модуль
 pygame.mixer.init()
@@ -151,13 +154,25 @@ while running:
 
     # Отрисовываем объекты в меню
     if mode == 'menu':
+        # Заполняем фон цветом
         app.fill(FRAME_COLOR)
+
+        # Отрисовываем текст
+        TEXT_MENU = FONT.render('Выберите сложность игры', 1, (255, 255, 255))
+        TEXT_MENU_RECT = TEXT_MENU.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 50))
+        app.blit(TEXT_MENU, TEXT_MENU_RECT)
+
+        # Отрисовываем кнопки
         app.blit(LVL_1, LVL_1_RECT)
         app.blit(LVL_2, LVL_2_RECT)
         app.blit(LVL_3, LVL_3_RECT)
+
+        # Пауза музыки
         pygame.mixer.music.pause()
+
     elif mode == 'game':
 
+        # Заполняем фон цветом
         app.fill(FRAME_COLOR)
 
         # Отрисовываем сетку
@@ -169,8 +184,10 @@ while running:
                 else:
                     color = OTHER_RECT_COLOR
                 draw_rect(color, row, column)
+
         # Отрисовываем яблоко
         draw_rect(FOOD_COLOR, food.x, food.y)
+        
         # Отрисовываем змею
         for rect in snake_rect:
             draw_rect(SNAKE_COLOR, rect.x, rect.y)
@@ -199,11 +216,10 @@ while running:
         app.blit(text_result, (SIZE_RECT, SIZE_RECT))
 
     elif mode == 'end':
+        
         # Отрисовываем окно проигрыша
-        # Шрифт окна проигрыша
-        FONT_END = pygame.font.SysFont(None, 40)
         # Текст проигрыша
-        TEXT_END = FONT_END.render('Игра окончена. Ваш счет: ' + str(result), 1, (255, 255, 255))
+        TEXT_END = FONT.render('Игра окончена. Ваш счет: ' + str(result), 1, (255, 255, 255))
         TEXT_END_RECT = TEXT_END.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 30))
         FRAME_END = (255, 0, 0)
         app.fill(FRAME_END)
