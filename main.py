@@ -3,7 +3,7 @@ import random
 
 pygame.init()
 
-# Прорисываем константы
+# Прописываем константы
 HEIGHT = 600
 FRAME_COLOR = (70, 130, 180)
 RECT_COLOR = (255, 255, 255)
@@ -72,13 +72,14 @@ def eat_my_self(snacke_rect):
             return True
     return False
 
+# Создаем класс Змеи
 class Rect:
     def __init__(self, x, y):
         self.x = x
         self.y = y
 
     def inside(self):
-        return 0 < self.x <= COUNT_RECTS - 1 and 0 < self.y <= COUNT_RECTS - 1
+        return 0 <= self.x <= COUNT_RECTS - 1 and 0 <= self.y <= COUNT_RECTS - 1
 
     def __eq__(self, other):
         return isinstance(other, Rect) and self.x == other.x and self.y == other.y
@@ -90,6 +91,7 @@ def random_food_block():
 
     food_block = Rect(x, y)
 
+    # Проверка на совпадение координат еды и змеи
     while food_block in snake_rect:
         x = random.randint(0, COUNT_RECTS - 1)
         y = random.randint(0, COUNT_RECTS - 1)
@@ -142,6 +144,7 @@ while running:
                 result = 0
                 mode = 'menu'
 
+            # Управление змейкой
             if event.key == pygame.K_UP and y_col != 0:
                 x_row = -1
                 y_col = 0
@@ -155,6 +158,7 @@ while running:
                 x_row = 0
                 y_col = -1
 
+    # Отрисовываем объекты в меню
     if mode == 'menu':
         app.fill(FRAME_COLOR)
         app.blit(LVL_1, LVL_1_RECT)
@@ -168,7 +172,7 @@ while running:
         # Отрисовываем сетку
         for row in range(COUNT_RECTS):
             for column in range(COUNT_RECTS):
-                
+                # Проверка на четность/нечетность
                 if (row + column) % 2 == 0:
                     color = RECT_COLOR
                 else:
@@ -180,17 +184,21 @@ while running:
         for rect in snake_rect:
             draw_rect(SNAKE_COLOR, rect.x, rect.y)
 
+        # Определение головы змеи
         head = snake_rect[-1]
 
+        # Проверка на съедание еды
         if food == head:
             result += 1
             snake_rect.append(food)
             food = random_food_block()
 
+        # Проверка на столкновение с границами
         if not head.inside() or eat_my_self(snake_rect):
             pygame.mixer.music.pause()
             mode = 'end'
 
+        # Перемещение змеи
         new_head = Rect(head.x + x_row, head.y + y_col)
         snake_rect.append(new_head)
         snake_rect.pop(0)
@@ -200,6 +208,7 @@ while running:
         app.blit(text_result, (SIZE_RECT, SIZE_RECT))
 
     elif mode == 'end':
+        # Отрисовываем окно проигрыша
         app.fill(FRAME_END)
         TEXT_END = FONT_END.render('Игра окончена. Ваш счет: ' + str(result), 1, (255, 255, 255))
 
@@ -212,8 +221,11 @@ while running:
                 start_snake()
                 pygame.mixer.music.play(-1)
 
+    # Обновление экрана
     pygame.display.update()
     clock.tick(FPS)
+
+# Останавливаем игру
 pygame.mixer.music.stop()
 pygame.mixer.music.unload()
 pygame.quit()
