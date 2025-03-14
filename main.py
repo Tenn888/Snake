@@ -18,15 +18,7 @@ SNAKE_COLOR = (0, 128, 0)
 FOOD_COLOR = (255, 0, 0)
 FPS = 5
 
-###################### Текст проигрыша
-# Шрифт окна проигрыша
-FONT_END = pygame.font.SysFont(None, 40)
-# Текст проигрыша
-TEXT_END = FONT_END.render('Игра окончена. Ваш счет: ', 1, (255, 255, 255))
-TEXT_END_RECT = TEXT_END.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 30))
-FRAME_END = (255, 0, 0)
-
-###################### Меню
+# Загрузка кнопок
 B_1 = pygame.image.load('buttons/button_1.png')
 LVL_1 = pygame.transform.scale(B_1, (40, 40))
 LVL_1_RECT = LVL_1.get_rect(center=(WIDTH // 4, HEIGHT // 2))
@@ -57,7 +49,6 @@ pygame.display.set_caption('Змейка')
 
 # Создаем переменную-флаг, которая отвечает за состояние цикла
 running = True
-mode = 'menu'
 
 # Функция рисования объектов
 def draw_rect(color, row, column):
@@ -209,9 +200,15 @@ while running:
 
     elif mode == 'end':
         # Отрисовываем окно проигрыша
-        app.fill(FRAME_END)
+        # Шрифт окна проигрыша
+        FONT_END = pygame.font.SysFont(None, 40)
+        # Текст проигрыша
         TEXT_END = FONT_END.render('Игра окончена. Ваш счет: ' + str(result), 1, (255, 255, 255))
+        TEXT_END_RECT = TEXT_END.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 30))
+        FRAME_END = (255, 0, 0)
+        app.fill(FRAME_END)
 
+        # Отрисовываем результат и кнопку "Еще раз"
         app.blit(TEXT_END, TEXT_END_RECT)
         app.blit(AGAIN, AGAIN_RECT)
 
