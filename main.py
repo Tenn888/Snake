@@ -1,3 +1,4 @@
+import json
 import pygame
 import random
 
@@ -133,10 +134,8 @@ while running:
 
             if mode == 'end' and event.key == pygame.K_r:
                 # Сброс игры
-                snake_rect = [Rect(9, 9)]
-                food = random_food_block()
-                result = 0
-                mode = 'menu'
+                start_snake()
+                pygame.mixer.music.play(-1)
 
             # Управление змейкой
             if event.key == pygame.K_UP and y_col != 0:
@@ -212,8 +211,12 @@ while running:
         snake_rect.pop(0)
 
         # Вывод полученных очков 
+        with open('data.json') as file:
+            json_record = json.load(file)['record']
         text_result = text.render(f'Очки: {result}', 0, RECT_COLOR)
-        app.blit(text_result, (SIZE_RECT, SIZE_RECT))
+        text_record = text.render(f'Рекорд: {json_record}', 0, RECT_COLOR)
+        app.blit(text_result, (SIZE_RECT, SIZE_RECT - 20))
+        app.blit(text_record, (SIZE_RECT, SIZE_RECT + 20))
 
     elif mode == 'end':
         
@@ -223,6 +226,11 @@ while running:
         TEXT_END_RECT = TEXT_END.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 30))
         FRAME_END = (255, 0, 0)
         app.fill(FRAME_END)
+
+        # Записываем результат в файл, если он еще не записан
+        if result > json_record:
+            with open('data.json', 'w') as file:
+                json.dump({'record': result}, file)
 
         # Отрисовываем результат и кнопку "Еще раз"
         app.blit(TEXT_END, TEXT_END_RECT)
