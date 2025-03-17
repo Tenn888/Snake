@@ -34,7 +34,8 @@ AGAIN = pygame.transform.scale(B_AGAIN, (40, 40))
 AGAIN_RECT = AGAIN.get_rect(center=(WIDTH // 2, HEIGHT // 1.7))
 
 # Шрифт текста
-FONT = pygame.font.SysFont(None, 40)
+FONT = pygame.font.SysFont('Arial', 40)
+FONT_SMALL = pygame.font.SysFont('Arial', 20)
 
 # Инициализируем звуковой модуль
 pygame.mixer.init()
@@ -60,10 +61,10 @@ def draw_rect(color, row, column):
                                               HEADER_RECT + SIZE_RECT + row * SIZE_RECT + RETURN * (row + 1), SIZE_RECT, SIZE_RECT))
 
 # Функция проверки столкновения головы с тулловищем
-def eat_my_self(snacke_rect):
+def eat_my_self(snake_rect):
     head = snake_rect[-1]
-    for i in range(len(snacke_rect) - 2):
-        if head.x == snacke_rect[i].x and head.y == snacke_rect[i].y:
+    for i in range(len(snake_rect) - 2):
+        if head.x == snake_rect[i].x and head.y == snake_rect[i].y:
             return True
     return False
 
@@ -116,7 +117,8 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         #######################################################################
-        elif mode == 'menu' and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+        elif (mode == 'menu' or mode == 'faq') and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+
             if LVL_1_RECT.collidepoint(event.pos):
                 FPS = 5
                 mode = 'game'
@@ -129,6 +131,12 @@ while running:
                 FPS = 15
                 mode = 'game'
                 pygame.mixer.music.play(loops=-1)
+            elif FAQ_MENU_RECT.collidepoint(event.pos):
+                mode = 'faq'
+            elif TEXT_FAQ_GAME_RECT.collidepoint(event.pos):
+                mode = 'faq_game'
+            elif TEXT_FAQ_MENU_RECT.collidepoint(event.pos):
+                mode = 'faq_menu'
 
         elif event.type == pygame.KEYDOWN:
 
@@ -156,10 +164,15 @@ while running:
         # Заполняем фон цветом
         app.fill(FRAME_COLOR)
 
+        # Создаем текст для FAQ
+        FAQ_MENU = FONT.render('FAQ', 1, (0, 0, 0))
+        FAQ_MENU_RECT = FAQ_MENU.get_rect(center=(WIDTH // 10, HEIGHT // 10))
+        app.blit(FAQ_MENU, FAQ_MENU_RECT)
+
         # Отрисовываем текст
-        TEXT_MENU = FONT.render('Выберите сложность игры', 1, (255, 255, 255))
-        TEXT_MENU_RECT = TEXT_MENU.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 50))
-        app.blit(TEXT_MENU, TEXT_MENU_RECT)
+        text_menu = FONT.render('Выберите сложность игры', 1, (255, 255, 255))
+        text_menu_rect = text_menu.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 50))
+        app.blit(text_menu, text_menu_rect)
 
         # Отрисовываем кнопки
         app.blit(LVL_1, LVL_1_RECT)
@@ -168,6 +181,47 @@ while running:
 
         # Пауза музыки
         pygame.mixer.music.pause()
+
+    elif mode == 'faq':
+        app.fill(FRAME_COLOR)
+
+        TEXT_FAQ_MENU = FONT.render('Главное меню', 1, (255, 255, 255))
+        TEXT_FAQ_MENU_RECT = TEXT_FAQ_MENU.get_rect(center=(WIDTH // 10 + 70, HEIGHT // 10))
+        app.blit(TEXT_FAQ_MENU, TEXT_FAQ_MENU_RECT)
+
+        TEXT_FAQ_GAME = FONT.render('Игра', 1, (255, 255, 255))
+        TEXT_FAQ_GAME_RECT = TEXT_FAQ_GAME.get_rect(center=(WIDTH // 10 - 4, HEIGHT // 9 + 50))
+        app.blit(TEXT_FAQ_GAME, TEXT_FAQ_GAME_RECT)
+
+    elif mode == 'faq_game':
+        app.fill(FRAME_COLOR)
+        
+        faq_game_list = [
+            'Игра:',
+            'W, A, S, D - перемещать змейку',
+            'Съедая яблоко Вы увеличиваете свою змейку',
+            'Съедая яблоко Вы повышаете свои очки',
+            'Рекорд - максимальное количество очков за все время'
+        ]
+        
+        for i, line in enumerate(faq_game_list):
+            text_faq_game_mode = FONT_SMALL.render(line, 1, (255, 255, 255))
+            text_faq_game_mode_rect = text_faq_game_mode.get_rect(center=(WIDTH // 2, HEIGHT // 4 + i * 40))
+            app.blit(text_faq_game_mode, text_faq_game_mode_rect)
+
+    elif mode == 'faq_menu':
+        app.fill(FRAME_COLOR)
+
+        faq_menu_list = [
+            'Главное меню:',
+            'Цифры - это уровень сложности игры.',
+            'FAQ - это кнопка для получения информации об игре.',
+        ]
+
+        for i, line in enumerate(faq_menu_list):
+            text_faq_menu_mode = FONT_SMALL.render(line, 1, (255, 255, 255))
+            text_faq_menu_mode_rect = text_faq_menu_mode.get_rect(center=(WIDTH // 2, HEIGHT // 4 + i * 40))
+            app.blit(text_faq_menu_mode, text_faq_menu_mode_rect)
 
     elif mode == 'game':
 
@@ -222,8 +276,8 @@ while running:
         
         # Отрисовываем окно проигрыша
         # Текст проигрыша
-        TEXT_END = FONT.render('Игра окончена. Ваш счет: ' + str(result), 1, (255, 255, 255))
-        TEXT_END_RECT = TEXT_END.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 30))
+        text_end = FONT.render('Игра окончена. Ваш счет: ' + str(result), 1, (255, 255, 255))
+        text_end_rect = text_end.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 30))
         FRAME_END = (255, 0, 0)
         app.fill(FRAME_END)
 
@@ -233,7 +287,7 @@ while running:
                 json.dump({'record': result}, file)
 
         # Отрисовываем результат и кнопку "Еще раз"
-        app.blit(TEXT_END, TEXT_END_RECT)
+        app.blit(text_end, text_end_rect)
         app.blit(AGAIN, AGAIN_RECT)
 
         # Добавляем проверку события MOUSEBUTTONDOWN в режиме end
