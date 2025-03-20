@@ -117,26 +117,46 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         #######################################################################
-        elif (mode == 'menu' or mode == 'faq') and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+        # Проверка на нажатие кнопок
+        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
 
-            if LVL_1_RECT.collidepoint(event.pos):
-                FPS = 5
-                mode = 'game'
-                pygame.mixer.music.play(loops=-1)
-            elif LVL_2_RECT.collidepoint(event.pos):
-                FPS = 10
-                mode = 'game'
-                pygame.mixer.music.play(loops=-1)
-            elif LVL_3_RECT.collidepoint(event.pos):
-                FPS = 15
-                mode = 'game'
-                pygame.mixer.music.play(loops=-1)
-            elif FAQ_MENU_RECT.collidepoint(event.pos):
-                mode = 'faq'
-            elif TEXT_FAQ_GAME_RECT.collidepoint(event.pos):
-                mode = 'faq_game'
-            elif TEXT_FAQ_MENU_RECT.collidepoint(event.pos):
-                mode = 'faq_menu'
+            # Проверка на нажатие кнопок в меню
+            if mode == 'menu':
+                if LVL_1_RECT.collidepoint(event.pos):
+                    FPS = 5
+                    mode = 'game'
+                    pygame.mixer.music.play(loops=-1)
+                elif LVL_2_RECT.collidepoint(event.pos):
+                    FPS = 10
+                    mode = 'game'
+                    pygame.mixer.music.play(loops=-1)
+                elif LVL_3_RECT.collidepoint(event.pos):
+                    FPS = 15
+                    mode = 'game'
+                    pygame.mixer.music.play(loops=-1)
+                elif FAQ_MENU_RECT.collidepoint(event.pos):
+                    mode = 'faq'
+
+            # Проверка на нажатие кнопок в FAQ
+            elif mode == 'faq':
+                if text_faq_game_rect.collidepoint(event.pos):
+                    mode = 'faq_game'
+                elif text_faq_menu_rect.collidepoint(event.pos):
+                    mode = 'faq_menu'
+                elif text_faq_back_rect.collidepoint(event.pos):
+                    mode = 'menu'
+
+            # Проверка на нажатие кнопок в FAQ_GAME
+            elif mode == 'faq_game':
+                if text_faq_game_back_rect.collidepoint(event.pos):
+                    mode = 'faq'
+            
+            # Проверка на нажатие кнопок в FAQ_MENU
+            elif mode == 'faq_menu':
+                if text_faq_menu_back_rect.collidepoint(event.pos):
+                    mode = 'faq'
+
+        #######################################################################
 
         elif event.type == pygame.KEYDOWN:
 
@@ -182,17 +202,23 @@ while running:
         # Пауза музыки
         pygame.mixer.music.pause()
 
+    # Отрисовываем объекты в FAQ
     elif mode == 'faq':
         app.fill(FRAME_COLOR)
 
-        TEXT_FAQ_MENU = FONT.render('Главное меню', 1, (255, 255, 255))
-        TEXT_FAQ_MENU_RECT = TEXT_FAQ_MENU.get_rect(center=(WIDTH // 10 + 70, HEIGHT // 10))
-        app.blit(TEXT_FAQ_MENU, TEXT_FAQ_MENU_RECT)
+        text_faq_menu = FONT.render('Главное меню', 1, (255, 255, 255))
+        text_faq_menu_rect = text_faq_menu.get_rect(center=(WIDTH // 10 + 70, HEIGHT // 10))
+        app.blit(text_faq_menu, text_faq_menu_rect)
 
-        TEXT_FAQ_GAME = FONT.render('Игра', 1, (255, 255, 255))
-        TEXT_FAQ_GAME_RECT = TEXT_FAQ_GAME.get_rect(center=(WIDTH // 10 - 4, HEIGHT // 9 + 50))
-        app.blit(TEXT_FAQ_GAME, TEXT_FAQ_GAME_RECT)
+        text_faq_game = FONT.render('Игра', 1, (255, 255, 255))
+        text_faq_game_rect = text_faq_game.get_rect(center=(WIDTH // 10 - 4, HEIGHT // 9 + 50))
+        app.blit(text_faq_game, text_faq_game_rect)
 
+        text_faq_back = FONT.render('Назад', 1, (255, 255, 255))
+        text_faq_back_rect = text_faq_back.get_rect(center=(WIDTH // 10 + 4, HEIGHT // 9 + 150))
+        app.blit(text_faq_back, text_faq_back_rect)
+
+    # Отрисовываем объекты в FAQ_GAME
     elif mode == 'faq_game':
         app.fill(FRAME_COLOR)
         
@@ -209,6 +235,11 @@ while running:
             text_faq_game_mode_rect = text_faq_game_mode.get_rect(center=(WIDTH // 2, HEIGHT // 4 + i * 40))
             app.blit(text_faq_game_mode, text_faq_game_mode_rect)
 
+        text_faq_game_back = FONT.render('Назад', 1, (255, 255, 255))
+        text_faq_game_back_rect = text_faq_game_back.get_rect(center=(WIDTH // 10 + 4, HEIGHT // 9 + 300))
+        app.blit(text_faq_game_back, text_faq_game_back_rect)
+
+    # Отрисовываем объекты в FAQ_MENU
     elif mode == 'faq_menu':
         app.fill(FRAME_COLOR)
 
@@ -223,6 +254,11 @@ while running:
             text_faq_menu_mode_rect = text_faq_menu_mode.get_rect(center=(WIDTH // 2, HEIGHT // 4 + i * 40))
             app.blit(text_faq_menu_mode, text_faq_menu_mode_rect)
 
+        text_faq_menu_back = FONT.render('Назад', 1, (255, 255, 255))
+        text_faq_menu_back_rect = text_faq_menu_back.get_rect(center=(WIDTH // 10 + 4, HEIGHT // 9 + 300))
+        app.blit(text_faq_menu_back, text_faq_menu_back_rect)
+
+    # Отрисовываем объекты в режиме game
     elif mode == 'game':
 
         # Заполняем фон цветом
@@ -272,9 +308,8 @@ while running:
         app.blit(text_result, (SIZE_RECT, SIZE_RECT - 20))
         app.blit(text_record, (SIZE_RECT, SIZE_RECT + 20))
 
+    # Отрисовываем объекты в режиме end
     elif mode == 'end':
-        
-        # Отрисовываем окно проигрыша
         # Текст проигрыша
         text_end = FONT.render('Игра окончена. Ваш счет: ' + str(result), 1, (255, 255, 255))
         text_end_rect = text_end.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 30))
