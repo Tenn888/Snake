@@ -60,7 +60,7 @@ pygame.display.set_caption('Змейка')
 running = True
 music_on = True
 
-#
+# Создаем словарь для отрисовонного текста
 display_objects = {}
 
 # Функция рисования объектов
@@ -112,6 +112,7 @@ def start_snake():
     result = 0
     mode = 'menu'
 
+# Отрислвываем текст и добавляем его в словарь
 def text_objects(text, font, a=1, b=1, x=0, y=0, size_x=WIDTH, size_y=HEIGHT):
     global display_objects
     text_display = font.render(text, 1, (255, 255, 255))
@@ -119,8 +120,6 @@ def text_objects(text, font, a=1, b=1, x=0, y=0, size_x=WIDTH, size_y=HEIGHT):
     app.blit(text_display, text_display_rect)
 
     display_objects[text] = text_display_rect
-
-text = pygame.font.SysFont('courier', 36)
 
 start_snake()
 
