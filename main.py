@@ -32,6 +32,12 @@ LVL_3_RECT = LVL_3.get_rect(center=(WIDTH // 4 * 3, HEIGHT // 2))
 B_AGAIN = pygame.image.load('buttons/button_again.png')
 AGAIN = pygame.transform.scale(B_AGAIN, (40, 40))
 AGAIN_RECT = AGAIN.get_rect(center=(WIDTH // 2, HEIGHT // 1.7))
+B_ON_MUSIC = pygame.image.load('buttons/on_music.png')
+ON_MUSIC = pygame.transform.scale(B_ON_MUSIC, (40, 40))
+ON_MUSIC_RECT = ON_MUSIC.get_rect(center=(WIDTH - 40, HEIGHT // 10 - 40))
+B_OFF_MUSIC = pygame.image.load('buttons/off_music.png')   
+OFF_MUSIC = pygame.transform.scale(B_OFF_MUSIC, (40, 40))
+OFF_MUSIC_RECT = OFF_MUSIC.get_rect(center=(WIDTH - 40, HEIGHT // 10 - 40))
 
 # Шрифт текста
 FONT = pygame.font.SysFont('Arial', 40)
@@ -43,9 +49,6 @@ pygame.mixer.init()
 # Загружаем музыку
 pygame.mixer.music.load('Music.mp3')
 
-# Включаем проигрывание звука
-pygame.mixer.music.play(-1)
-
 # Создаем игровое окно
 app = pygame.display.set_mode((WIDTH, HEIGHT))
 
@@ -54,6 +57,7 @@ pygame.display.set_caption('Змейка')
 
 # Создаем переменную-флаг, которая отвечает за состояние цикла
 running = True
+music_on = True
 
 # Функция рисования объектов
 def draw_rect(color, row, column):
@@ -307,6 +311,18 @@ while running:
         text_record = text.render(f'Рекорд: {json_record}', 0, RECT_COLOR)
         app.blit(text_result, (SIZE_RECT, SIZE_RECT - 20))
         app.blit(text_record, (SIZE_RECT, SIZE_RECT + 20))
+
+        if music_on:
+            app.blit(ON_MUSIC, ON_MUSIC_RECT)
+        else:
+            app.blit(OFF_MUSIC, OFF_MUSIC_RECT)
+        
+        if OFF_MUSIC_RECT.collidepoint(pygame.mouse.get_pos()) and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            music_on = not music_on
+            if music_on:
+                pygame.mixer.music.unpause()
+            else:
+                pygame.mixer.music.pause()
 
     # Отрисовываем объекты в режиме end
     elif mode == 'end':
