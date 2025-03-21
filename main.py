@@ -309,8 +309,8 @@ while running:
         with open('data.json') as file:
             json_record = json.load(file)['record']
         
-        text_objects(f'Очки: {result}', FONT, b=-20, size_x=SIZE_RECT, size_y=SIZE_RECT)
-        text_objects(f'Рекорд: {json_record}', FONT, b=20, size_x=SIZE_RECT, size_y=SIZE_RECT)
+        text_objects(f'Очки: {result}', FONT, x=40, y=-5, size_x=SIZE_RECT, size_y=SIZE_RECT)
+        text_objects(f'Рекорд: {json_record}', FONT, x=66, y=35, size_x=SIZE_RECT, size_y=SIZE_RECT)
 
         if music_on:
             app.blit(ON_MUSIC, ON_MUSIC_RECT)
