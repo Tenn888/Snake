@@ -164,12 +164,12 @@ while running:
 
             # Проверка на нажатие кнопок в FAQ_GAME
             elif mode == 'faq_game':
-                if text_faq_game_back_rect.collidepoint(event.pos):
+                if display_objects['Назад'].collidepoint(event.pos):
                     mode = 'faq'
             
             # Проверка на нажатие кнопок в FAQ_MENU
             elif mode == 'faq_menu':
-                if text_faq_menu_back_rect.collidepoint(event.pos):
+                if display_objects['Назад'].collidepoint(event.pos):
                     mode = 'faq'
 
         #######################################################################
@@ -200,6 +200,7 @@ while running:
         # Заполняем фон цветом
         app.fill(FRAME_COLOR)
 
+        # Отрисовываем кнопку "FAQ"
         text_objects('FAQ', FONT, 10, 10,)
 
         # Отрисовываем текст
@@ -215,18 +216,24 @@ while running:
 
     # Отрисовываем объекты в FAQ
     elif mode == 'faq':
+        # Заполняем фон цветом
         app.fill(FRAME_COLOR)
 
+        # Отрисовываем кнопку "Главное меню"
         text_objects('Главное меню', FONT, 10, 10, 70, 0)
 
+        # Отрисовываем кнопку "Игра"
         text_objects('Игра', FONT, 10, 9, -4, 50)
 
+        # Отрисовываем кнопку "Назад"
         text_objects('Назад', FONT, 10, 9, 4, 150)
 
     # Отрисовываем объекты в FAQ_GAME
     elif mode == 'faq_game':
+        # Заполняем фон цветом
         app.fill(FRAME_COLOR)
         
+        # Составляем список для отрисовки текста
         faq_game_list = [
             'Игра:',
             'W, A, S, D - перемещать змейку',
@@ -235,33 +242,30 @@ while running:
             'Рекорд - максимальное количество очков за все время'
         ]
         
+        # Отрисовываем текст
         for i, line in enumerate(faq_game_list):
-            text_faq_game_mode = FONT_SMALL.render(line, 1, (255, 255, 255))
-            text_faq_game_mode_rect = text_faq_game_mode.get_rect(center=(WIDTH // 2, HEIGHT // 4 + i * 40))
-            app.blit(text_faq_game_mode, text_faq_game_mode_rect)
+            text_objects(line, FONT_SMALL, a=2, b=4, y=i * 40)
 
-        text_faq_game_back = FONT.render('Назад', 1, (255, 255, 255))
-        text_faq_game_back_rect = text_faq_game_back.get_rect(center=(WIDTH // 10 + 4, HEIGHT // 9 + 300))
-        app.blit(text_faq_game_back, text_faq_game_back_rect)
+        # Отрисовываем кнопку "Назад"
+        text_objects('Назад', FONT, a=10, b=9, x=4, y=300)
 
     # Отрисовываем объекты в FAQ_MENU
     elif mode == 'faq_menu':
         app.fill(FRAME_COLOR)
 
+        # Составляем список для отрисовки текста
         faq_menu_list = [
             'Главное меню:',
             'Цифры - это уровень сложности игры.',
             'FAQ - это кнопка для получения информации об игре.',
         ]
 
+        # Отрисовываем текст
         for i, line in enumerate(faq_menu_list):
-            text_faq_menu_mode = FONT_SMALL.render(line, 1, (255, 255, 255))
-            text_faq_menu_mode_rect = text_faq_menu_mode.get_rect(center=(WIDTH // 2, HEIGHT // 4 + i * 40))
-            app.blit(text_faq_menu_mode, text_faq_menu_mode_rect)
-
-        text_faq_menu_back = FONT.render('Назад', 1, (255, 255, 255))
-        text_faq_menu_back_rect = text_faq_menu_back.get_rect(center=(WIDTH // 10 + 4, HEIGHT // 9 + 300))
-        app.blit(text_faq_menu_back, text_faq_menu_back_rect)
+            text_objects(line, FONT_SMALL, a=2, b=4, y=i * 40)
+        
+        # Отрисовываем кнопку "Назад"
+        text_objects('Назад', FONT, a=10, b=9, x=4, y=300)
 
     # Отрисовываем объекты в режиме game
     elif mode == 'game':
@@ -309,14 +313,17 @@ while running:
         with open('data.json') as file:
             json_record = json.load(file)['record']
         
+        # Отрисовываем текст
         text_objects(f'Очки: {result}', FONT, x=40, y=-5, size_x=SIZE_RECT, size_y=SIZE_RECT)
         text_objects(f'Рекорд: {json_record}', FONT, x=66, y=35, size_x=SIZE_RECT, size_y=SIZE_RECT)
 
+        # Проверка на включение/выключение музыки
         if music_on:
             app.blit(ON_MUSIC, ON_MUSIC_RECT)
         else:
             app.blit(OFF_MUSIC, OFF_MUSIC_RECT)
         
+        # Пауза музыки
         if OFF_MUSIC_RECT.collidepoint(pygame.mouse.get_pos()) and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             music_on = not music_on
             if music_on:
