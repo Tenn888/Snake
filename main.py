@@ -7,6 +7,7 @@ pygame.init()
 # Прописываем константы
 HEIGHT = 600
 FRAME_COLOR = (70, 130, 180)
+FRAME_END = (255, 0, 0)
 RECT_COLOR = (255, 255, 255)
 OTHER_RECT_COLOR = (204, 255, 255)
 SIZE_RECT = 20
@@ -59,6 +60,9 @@ pygame.display.set_caption('Змейка')
 running = True
 music_on = True
 
+#
+display_objects = {}
+
 # Функция рисования объектов
 def draw_rect(color, row, column):
     pygame.draw.rect(app, color, (SIZE_RECT + column * SIZE_RECT + RETURN * (column + 1), 
@@ -108,6 +112,14 @@ def start_snake():
     result = 0
     mode = 'menu'
 
+def text_objects(text, font, a=1, b=1, x=0, y=0, size_x=WIDTH, size_y=HEIGHT):
+    global display_objects
+    text_display = font.render(text, 1, (255, 255, 255))
+    text_display_rect = text_display.get_rect(center=(size_x // a + x, size_y // b + y)) 
+    app.blit(text_display, text_display_rect)
+
+    display_objects[text] = text_display_rect
+
 text = pygame.font.SysFont('courier', 36)
 
 start_snake()
@@ -138,16 +150,16 @@ while running:
                     FPS = 15
                     mode = 'game'
                     pygame.mixer.music.play(loops=-1)
-                elif FAQ_MENU_RECT.collidepoint(event.pos):
+                elif display_objects['FAQ'].collidepoint(event.pos):
                     mode = 'faq'
 
             # Проверка на нажатие кнопок в FAQ
             elif mode == 'faq':
-                if text_faq_game_rect.collidepoint(event.pos):
+                if display_objects['Игра'].collidepoint(event.pos):
                     mode = 'faq_game'
-                elif text_faq_menu_rect.collidepoint(event.pos):
+                elif display_objects['Главное меню'].collidepoint(event.pos):
                     mode = 'faq_menu'
-                elif text_faq_back_rect.collidepoint(event.pos):
+                elif display_objects['Назад'].collidepoint(event.pos):
                     mode = 'menu'
 
             # Проверка на нажатие кнопок в FAQ_GAME
@@ -188,15 +200,10 @@ while running:
         # Заполняем фон цветом
         app.fill(FRAME_COLOR)
 
-        # Создаем текст для FAQ
-        FAQ_MENU = FONT.render('FAQ', 1, (0, 0, 0))
-        FAQ_MENU_RECT = FAQ_MENU.get_rect(center=(WIDTH // 10, HEIGHT // 10))
-        app.blit(FAQ_MENU, FAQ_MENU_RECT)
+        text_objects('FAQ', FONT, 10, 10,)
 
         # Отрисовываем текст
-        text_menu = FONT.render('Выберите сложность игры', 1, (255, 255, 255))
-        text_menu_rect = text_menu.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 50))
-        app.blit(text_menu, text_menu_rect)
+        text_objects('Выберите сложность игры', FONT, 2, 2, 0, -50)
 
         # Отрисовываем кнопки
         app.blit(LVL_1, LVL_1_RECT)
@@ -210,17 +217,11 @@ while running:
     elif mode == 'faq':
         app.fill(FRAME_COLOR)
 
-        text_faq_menu = FONT.render('Главное меню', 1, (255, 255, 255))
-        text_faq_menu_rect = text_faq_menu.get_rect(center=(WIDTH // 10 + 70, HEIGHT // 10))
-        app.blit(text_faq_menu, text_faq_menu_rect)
+        text_objects('Главное меню', FONT, 10, 10, 70, 0)
 
-        text_faq_game = FONT.render('Игра', 1, (255, 255, 255))
-        text_faq_game_rect = text_faq_game.get_rect(center=(WIDTH // 10 - 4, HEIGHT // 9 + 50))
-        app.blit(text_faq_game, text_faq_game_rect)
+        text_objects('Игра', FONT, 10, 9, -4, 50)
 
-        text_faq_back = FONT.render('Назад', 1, (255, 255, 255))
-        text_faq_back_rect = text_faq_back.get_rect(center=(WIDTH // 10 + 4, HEIGHT // 9 + 150))
-        app.blit(text_faq_back, text_faq_back_rect)
+        text_objects('Назад', FONT, 10, 9, 4, 150)
 
     # Отрисовываем объекты в FAQ_GAME
     elif mode == 'faq_game':
@@ -307,10 +308,9 @@ while running:
         # Вывод полученных очков 
         with open('data.json') as file:
             json_record = json.load(file)['record']
-        text_result = text.render(f'Очки: {result}', 0, RECT_COLOR)
-        text_record = text.render(f'Рекорд: {json_record}', 0, RECT_COLOR)
-        app.blit(text_result, (SIZE_RECT, SIZE_RECT - 20))
-        app.blit(text_record, (SIZE_RECT, SIZE_RECT + 20))
+        
+        text_objects(f'Очки: {result}', FONT, b=-20, size_x=SIZE_RECT, size_y=SIZE_RECT)
+        text_objects(f'Рекорд: {json_record}', FONT, b=20, size_x=SIZE_RECT, size_y=SIZE_RECT)
 
         if music_on:
             app.blit(ON_MUSIC, ON_MUSIC_RECT)
@@ -326,10 +326,6 @@ while running:
 
     # Отрисовываем объекты в режиме end
     elif mode == 'end':
-        # Текст проигрыша
-        text_end = FONT.render('Игра окончена. Ваш счет: ' + str(result), 1, (255, 255, 255))
-        text_end_rect = text_end.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 30))
-        FRAME_END = (255, 0, 0)
         app.fill(FRAME_END)
 
         # Записываем результат в файл, если он еще не записан
@@ -338,7 +334,7 @@ while running:
                 json.dump({'record': result}, file)
 
         # Отрисовываем результат и кнопку "Еще раз"
-        app.blit(text_end, text_end_rect)
+        text_objects('Игра окончена. Ваш счет: ' + str(result), FONT, 2, 2, y=-30)
         app.blit(AGAIN, AGAIN_RECT)
 
         # Добавляем проверку события MOUSEBUTTONDOWN в режиме end
