@@ -58,7 +58,19 @@ pygame.display.set_caption('Змейка')
 
 # Создаем переменную-флаг, которая отвечает за состояние цикла
 running = True
-music_on = True
+
+# 
+try:
+    with open('data.json', 'r') as data_file:
+        data = json.load(data_file)
+        music_on = data['music_status']
+except FileNotFoundError:
+    with open('data.json', 'w') as data_file:
+        data = {
+            'music_status': True, 
+            'record': 0
+            }
+        music_on = data['music_status']
 
 # Создаем словарь для отрисовонного текста
 display_objects = {}
@@ -140,15 +152,18 @@ while running:
                 if LVL_1_RECT.collidepoint(event.pos):
                     FPS = 5
                     mode = 'game'
-                    pygame.mixer.music.play(loops=-1)
+                    if music_on:
+                        pygame.mixer.music.play(loops=-1)
                 elif LVL_2_RECT.collidepoint(event.pos):
                     FPS = 10
                     mode = 'game'
-                    pygame.mixer.music.play(loops=-1)
+                    if music_on:
+                        pygame.mixer.music.play(loops=-1)
                 elif LVL_3_RECT.collidepoint(event.pos):
                     FPS = 15
                     mode = 'game'
-                    pygame.mixer.music.play(loops=-1)
+                    if music_on:
+                        pygame.mixer.music.play(loops=-1)
                 elif display_objects['FAQ'].collidepoint(event.pos):
                     mode = 'faq'
 
@@ -178,7 +193,6 @@ while running:
             if mode == 'end' and event.key == pygame.K_r:
                 # Сброс игры
                 start_snake()
-                pygame.mixer.music.play(-1)
 
             # Управление змейкой
             if event.key == pygame.K_UP and y_col != 0:
@@ -307,14 +321,10 @@ while running:
         new_head = Rect(head.x + x_row, head.y + y_col)
         snake_rect.append(new_head)
         snake_rect.pop(0)
-
-        # Вывод полученных очков 
-        with open('data.json') as file:
-            json_record = json.load(file)['record']
         
         # Отрисовываем текст
         text_objects(f'Очки: {result}', FONT, x=40, y=-5, size_x=SIZE_RECT, size_y=SIZE_RECT)
-        text_objects(f'Рекорд: {json_record}', FONT, x=66, y=35, size_x=SIZE_RECT, size_y=SIZE_RECT)
+        text_objects(f'Рекорд: {data['record']}', FONT, x=66, y=35, size_x=SIZE_RECT, size_y=SIZE_RECT)
 
         # Проверка на включение/выключение музыки
         if music_on:
@@ -327,17 +337,18 @@ while running:
             music_on = not music_on
             if music_on:
                 pygame.mixer.music.unpause()
+                data['music_status'] = music_on
             else:
                 pygame.mixer.music.pause()
+                data['music_status'] = music_on
 
     # Отрисовываем объекты в режиме end
     elif mode == 'end':
         app.fill(FRAME_END)
 
-        # Записываем результат в файл, если он еще не записан
-        if result > json_record:
-            with open('data.json', 'w') as file:
-                json.dump({'record': result}, file)
+        # Записываем результат в data, как рекорд, если он больше старого рекорда
+        if result > data['record']:
+            data['record'] = result
 
         # Отрисовываем результат и кнопку "Еще раз"
         text_objects('Игра окончена. Ваш счет: ' + str(result), FONT, 2, 2, y=-30)
@@ -347,11 +358,14 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if AGAIN_RECT.collidepoint(event.pos):
                 start_snake()
-                pygame.mixer.music.play(-1)
 
     # Обновление экрана
     pygame.display.update()
     clock.tick(FPS)
+
+# Записываем результат в файл
+with open('data.json', 'w') as file:
+    json.dump(data, file)
 
 # Останавливаем игру
 pygame.mixer.music.stop()
