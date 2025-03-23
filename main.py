@@ -59,7 +59,7 @@ pygame.display.set_caption('Змейка')
 # Создаем переменную-флаг, которая отвечает за состояние цикла
 running = True
 
-# 
+# Создаем файл для хранения данных и переменную data
 try:
     with open('data.json', 'r') as data_file:
         data = json.load(data_file)
@@ -133,6 +133,7 @@ def text_objects(text, font, a=1, b=1, x=0, y=0, size_x=WIDTH, size_y=HEIGHT):
 
     display_objects[text] = text_display_rect
 
+# Вызываем функцию начальных переменных
 start_snake()
 
 clock = pygame.time.Clock()
