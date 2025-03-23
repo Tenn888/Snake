@@ -1,44 +1,51 @@
 # Snake
 
-This is a simple Snake game implemented in Python.
+Это простая игра «Змейка», реализованная на Python.
 
-## Description
+## Описание
 
-The Snake game is a classic arcade game where the player controls a snake that moves around the screen, eating food to grow longer. The objective is to make the snake as long as possible without running into the walls or itself.
+Игра «Змейка» — классическая аркадная игра, в которой игрок управляет змейкой, которая движется по экрану, поедая еду, чтобы стать длиннее. Цель — сделать змейку как можно длиннее, не врезаясь в стены или в саму себя.
 
-## Features
+## Функции
 
-- Classic Snake gameplay
-- Simple and intuitive controls
-- Score tracking
+- Классический геймплей «Змейки»
+- Простое и интуитивно понятное управление
+- Отслеживание результатов
 
-## Installation
+## Установка
 
-1. Install Python
-2. Download from the Release section
+1. Установите Python
+2. Скачать из раздела «Release»
 
-## Usage
+Или 
 
-To start the game, run the following command:
+1. Установите Python
+2. Скачайте из раздела «Release» zip-архив
+3. Разархивируйте
+4. Запустите файл «main.py» 
+
+## Использование
+
+Чтобы запустить игру, выполните следующую команду:
 ```sh
 python main.py
 ```
 
-## Controls
+## Управление
 
-- Arrow keys to move the snake
+- Клавиши со стрелками для перемещения змеи
 
-## Files
+## Файлы
 
-- main.py responsible for the operation of the entire program
-- button_1.png, button_2.png, button_3.png rendering buttons in the menu
-- Music.mp3 - music in the background of the program
+- main.py отвечает за работу всей программы
+- button_1.png, button_2.png, button_3.png и другие отвечают за рендеринг кнопок в меню
+- Music.mp3 - музыка на заднем плане программы
 
 
-## Contributing
+## Вклад в проект
 
-Contributions are welcome! Please open an issue or submit a pull request for any changes.
+Помощь приветствуется! Пожалуйста, откройте вопрос или отправьте запрос на изменение/дополнение программы
 
-## Acknowledgements
+## Благодарности
 
-- Inspired by the classic Snake game
+Вдохновлено классической игрой «Змейка»
