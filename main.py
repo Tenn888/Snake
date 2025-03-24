@@ -21,15 +21,6 @@ FOOD_COLOR = (255, 0, 0)
 FPS = 5
 
 # Загрузка кнопок
-B_1 = pygame.image.load('buttons/button_1.png')
-LVL_1 = pygame.transform.scale(B_1, (40, 50))
-LVL_1_RECT = LVL_1.get_rect(center=(WIDTH // 4, HEIGHT // 2))
-B_2 = pygame.image.load('buttons/button_2.png')
-LVL_2 = pygame.transform.scale(B_2, (40, 50))
-LVL_2_RECT = LVL_2.get_rect(center=(WIDTH // 4 * 2, HEIGHT // 2))
-B_3 = pygame.image.load('buttons/button_3.png')
-LVL_3 = pygame.transform.scale(B_3, (40, 50))
-LVL_3_RECT = LVL_3.get_rect(center=(WIDTH // 4 * 3, HEIGHT // 2))
 B_AGAIN = pygame.image.load('buttons/button_again.png')
 AGAIN = pygame.transform.scale(B_AGAIN, (40, 40))
 AGAIN_RECT = AGAIN.get_rect(center=(WIDTH // 2, HEIGHT // 1.7))
@@ -150,24 +141,29 @@ while running:
 
             # Проверка на нажатие кнопок в меню
             if mode == 'menu':
-                if LVL_1_RECT.collidepoint(event.pos):
+                if display_objects['Играть'].collidepoint(event.pos):
+                    mode = 'game_complexity'
+                elif display_objects['FAQ'].collidepoint(event.pos):
+                    mode = 'faq'
+
+            elif mode == 'game_complexity':
+                if display_objects['Легко'].collidepoint(event.pos):
                     FPS = 5
                     mode = 'game'
                     if music_on:
                         pygame.mixer.music.play(loops=-1)
-                elif LVL_2_RECT.collidepoint(event.pos):
+                elif display_objects['Средне'].collidepoint(event.pos):
                     FPS = 10
                     mode = 'game'
                     if music_on:
                         pygame.mixer.music.play(loops=-1)
-                elif LVL_3_RECT.collidepoint(event.pos):
+                elif display_objects['Сложно'].collidepoint(event.pos):
                     FPS = 15
                     mode = 'game'
                     if music_on:
                         pygame.mixer.music.play(loops=-1)
-                elif display_objects['FAQ'].collidepoint(event.pos):
-                    mode = 'faq'
-
+                elif display_objects['Назад'].collidepoint(event.pos):
+                    mode = 'menu'
             # Проверка на нажатие кнопок в FAQ
             elif mode == 'faq':
                 if display_objects['Игра'].collidepoint(event.pos):
@@ -217,17 +213,28 @@ while running:
         # Отрисовываем кнопку "FAQ"
         text_objects('FAQ', FONT, 10, 10,)
 
-        # Отрисовываем текст
-        text_objects('Выберите сложность игры', FONT, 2, 2, 0, -50)
-
-        # Отрисовываем кнопки
-        app.blit(LVL_1, LVL_1_RECT)
-        app.blit(LVL_2, LVL_2_RECT)
-        app.blit(LVL_3, LVL_3_RECT)
+        # Отрисовываем ryjgre "Играть"
+        text_objects('Играть', FONT, a=4, b=2, x=115, y=-50)
 
         # Пауза музыки
         pygame.mixer.music.pause()
 
+    # Отрисовываем объекты в game_complexity
+    elif mode == 'game_complexity':
+        # Заполняем фон цветом
+        app.fill(FRAME_COLOR)
+
+        # Отрисовываем кнопку "Назад"
+        text_objects('Назад', FONT, a=10, b=9, x=4, y=300)
+
+        # Отрисовываем текст
+        text_objects('Выберите сложность игры', FONT, a=2, b=2, x=-7, y=-150)
+
+        # Отрисовываем кнопки
+        text_objects('Легко', FONT, a=4, b=2, x=-50, y=-50)
+        text_objects('Средне', FONT, a=4, b=2, x=100, y=-50)
+        text_objects('Сложно', FONT, a=4, b=2, x=250, y=-50)
+        
     # Отрисовываем объекты в FAQ
     elif mode == 'faq':
         # Заполняем фон цветом
