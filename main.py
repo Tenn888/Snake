@@ -184,7 +184,6 @@ while running:
             elif mode == 'faq_complexity':
                 if display_objects['Назад'].collidepoint(event.pos):
                     mode = 'faq'
-        #######################################################################
 
         elif event.type == pygame.KEYDOWN:
 
@@ -193,18 +192,19 @@ while running:
                 start_snake()
 
             # Управление змейкой
-            if event.key == pygame.K_UP and y_col != 0:
+            if event.key in (pygame.K_UP, pygame.K_w) and y_col != 0:
                 x_row = -1
                 y_col = 0
-            if event.key == pygame.K_DOWN and y_col != 0:
+            if event.key in (pygame.K_DOWN, pygame.K_s) and y_col != 0:
                 x_row = 1
                 y_col = 0
-            if event.key == pygame.K_RIGHT and x_row != 0:
+            if event.key in (pygame.K_RIGHT, pygame.K_d) and x_row != 0:
                 x_row = 0
                 y_col = 1
-            if event.key == pygame.K_LEFT and x_row != 0:
+            if event.key in (pygame.K_LEFT, pygame.K_a) and x_row != 0:
                 x_row = 0
                 y_col = -1
+        #######################################################################
 
     # Отрисовываем объекты в меню
     if mode == 'menu':
