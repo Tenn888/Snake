@@ -164,12 +164,15 @@ while running:
                         pygame.mixer.music.play(loops=-1)
                 elif display_objects['Назад'].collidepoint(event.pos):
                     mode = 'menu'
+
             # Проверка на нажатие кнопок в FAQ
             elif mode == 'faq':
                 if display_objects['Игра'].collidepoint(event.pos):
                     mode = 'faq_game'
                 elif display_objects['Главное меню'].collidepoint(event.pos):
                     mode = 'faq_menu'
+                elif display_objects['Сложность'].collidepoint(event.pos): 
+                    mode = 'faq_complexity'
                 elif display_objects['Назад'].collidepoint(event.pos):
                     mode = 'menu'
 
@@ -183,6 +186,9 @@ while running:
                 if display_objects['Назад'].collidepoint(event.pos):
                     mode = 'faq'
 
+            elif mode == 'faq_complexity':
+                if display_objects['Назад'].collidepoint(event.pos):
+                    mode = 'faq'
         #######################################################################
 
         elif event.type == pygame.KEYDOWN:
@@ -246,8 +252,11 @@ while running:
         # Отрисовываем кнопку "Игра"
         text_objects('Игра', FONT, 10, 9, -4, 50)
 
+        # Отрисовываем кнопку "Сложность"
+        text_objects('Сложность', FONT, 10, 9, 40, 100)
+
         # Отрисовываем кнопку "Назад"
-        text_objects('Назад', FONT, 10, 9, 4, 150)
+        text_objects('Назад', FONT, 10, 9, 4, 300)
 
     # Отрисовываем объекты в FAQ_GAME
     elif mode == 'faq_game':
@@ -285,6 +294,25 @@ while running:
         for i, line in enumerate(faq_menu_list):
             text_objects(line, FONT_SMALL, a=2, b=4, y=i * 40)
         
+        # Отрисовываем кнопку "Назад"
+        text_objects('Назад', FONT, a=10, b=9, x=4, y=300)
+
+    elif mode == 'faq_complexity':
+        # Заполняем фон цветом
+        app.fill(FRAME_COLOR)
+
+        # Составляем список для отрисовки текста
+        faq_complexity_list = [
+            'Сложность:',
+            'Легко - 5 FPS',
+            'Средне - 10 FPS',
+            'Сложно - 15 FPS',
+        ]
+
+        # Отрисовываем текст
+        for i, line in enumerate(faq_complexity_list):
+            text_objects(line, FONT_SMALL, a=2, b=4, y=i * 40)
+
         # Отрисовываем кнопку "Назад"
         text_objects('Назад', FONT, a=10, b=9, x=4, y=300)
 
