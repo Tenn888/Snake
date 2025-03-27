@@ -21,15 +21,10 @@ FOOD_COLOR = (255, 0, 0)
 FPS = 5
 
 # Загрузка кнопок
-B_AGAIN = pygame.image.load('buttons/button_again.png')
-AGAIN = pygame.transform.scale(B_AGAIN, (40, 40))
-AGAIN_RECT = AGAIN.get_rect(center=(WIDTH // 2, HEIGHT // 1.7))
 B_ON_MUSIC = pygame.image.load('buttons/on_music.png')
-ON_MUSIC = pygame.transform.scale(B_ON_MUSIC, (40, 40))
-ON_MUSIC_RECT = ON_MUSIC.get_rect(center=(WIDTH - 40, HEIGHT // 10 - 40))
+ON_MUSIC_RECT = B_ON_MUSIC.get_rect(center=(WIDTH - 40, HEIGHT // 10 - 40))
 B_OFF_MUSIC = pygame.image.load('buttons/off_music.png')   
-OFF_MUSIC = pygame.transform.scale(B_OFF_MUSIC, (40, 40))
-OFF_MUSIC_RECT = OFF_MUSIC.get_rect(center=(WIDTH - 40, HEIGHT // 10 - 40))
+OFF_MUSIC_RECT = B_ON_MUSIC.get_rect(center=(WIDTH - 40, HEIGHT // 10 - 40))
 
 # Шрифт текста
 FONT = pygame.font.SysFont('Arial', 40)
@@ -364,9 +359,9 @@ while running:
 
         # Проверка на включение/выключение музыки
         if music_on:
-            app.blit(ON_MUSIC, ON_MUSIC_RECT)
+            app.blit(B_ON_MUSIC, ON_MUSIC_RECT)
         else:
-            app.blit(OFF_MUSIC, OFF_MUSIC_RECT)
+            app.blit(B_OFF_MUSIC, OFF_MUSIC_RECT)
         
         # Пауза музыки
         if OFF_MUSIC_RECT.collidepoint(pygame.mouse.get_pos()) and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
@@ -388,11 +383,11 @@ while running:
 
         # Отрисовываем результат и кнопку "Еще раз"
         text_objects('Игра окончена. Ваш счет: ' + str(result), FONT, 2, 2, y=-30)
-        app.blit(AGAIN, AGAIN_RECT)
+        text_objects('Начать заново', FONT, 2, 2, y=50)
 
         # Добавляем проверку события MOUSEBUTTONDOWN в режиме end
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            if AGAIN_RECT.collidepoint(event.pos):
+            if display_objects['Начать заново'].collidepoint(event.pos):
                 start_snake()
 
     # Обновление экрана
