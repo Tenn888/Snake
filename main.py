@@ -21,10 +21,14 @@ FOOD_COLOR = (255, 0, 0)
 FPS = 5
 
 # Загрузка кнопок
-B_ON_MUSIC = pygame.image.load('buttons/on_music.png')
-ON_MUSIC_RECT = B_ON_MUSIC.get_rect(center=(WIDTH - 40, HEIGHT // 10 - 40))
-B_OFF_MUSIC = pygame.image.load('buttons/off_music.png')   
-OFF_MUSIC_RECT = B_ON_MUSIC.get_rect(center=(WIDTH - 40, HEIGHT // 10 - 40))
+B_ON_MUSIC = pygame.image.load('images/on_music.png')
+ON_MUSIC_RECT = B_ON_MUSIC.get_rect(center=(WIDTH - 40, HEIGHT // 10 - 30))
+B_OFF_MUSIC = pygame.image.load('images/off_music.png')   
+OFF_MUSIC_RECT = B_ON_MUSIC.get_rect(center=(WIDTH - 40, HEIGHT // 10 - 30))
+B_PAUSE = pygame.image.load('images/pause.png')
+PAUSE_RECT = B_PAUSE.get_rect(center=(WIDTH - 100, HEIGHT // 10 - 30))
+B_PLAY = pygame.image.load('images/play.png')
+PLAY_RECT = B_PLAY.get_rect(center=(WIDTH - 100, HEIGHT // 10 - 30))
 
 # Шрифт текста
 FONT = pygame.font.SysFont('Arial', 40)
@@ -66,6 +70,10 @@ def draw_rect(color, row, column):
     pygame.draw.rect(app, color, (SIZE_RECT + column * SIZE_RECT + RETURN * (column + 1), 
                                               HEADER_RECT + SIZE_RECT + row * SIZE_RECT + RETURN * (row + 1), SIZE_RECT, SIZE_RECT))
 
+def draw_sprite(sprite, x, y):
+    app.blit(sprite, (y * SIZE_RECT + RETURN * (y + 1), 
+                   HEADER_RECT + x * SIZE_RECT + RETURN * (x + 1)))
+
 # Функция проверки столкновения головы с тулловищем
 def eat_my_self(snake_rect):
     head = snake_rect[-1]
@@ -80,9 +88,11 @@ class Rect:
         self.x = x
         self.y = y
 
+    # Проверка на нахождение в пределах игрового поля
     def inside(self):
         return 0 <= self.x <= COUNT_RECTS - 1 and 0 <= self.y <= COUNT_RECTS - 1
 
+    # Проверка на нахождение в пределах змеи
     def __eq__(self, other):
         return isinstance(other, Rect) and self.x == other.x and self.y == other.y
 
@@ -329,7 +339,9 @@ while running:
 
         # Отрисовываем яблоко
         draw_rect(FOOD_COLOR, food.x, food.y)
-        
+        #draw_sprite(B_APPLE, food.x, food.y)
+        #app.blit(B_APPLE, (food.x * SIZE_RECT + SIZE_RECT, food.y * SIZE_RECT + HEADER_RECT + SIZE_RECT))
+
         # Отрисовываем змею
         for rect in snake_rect:
             draw_rect(SNAKE_COLOR, rect.x, rect.y)
@@ -362,6 +374,8 @@ while running:
             app.blit(B_ON_MUSIC, ON_MUSIC_RECT)
         else:
             app.blit(B_OFF_MUSIC, OFF_MUSIC_RECT)
+
+        app.blit(B_PAUSE, PAUSE_RECT)
         
         # Пауза музыки
         if OFF_MUSIC_RECT.collidepoint(pygame.mouse.get_pos()) and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
@@ -373,6 +387,23 @@ while running:
                 pygame.mixer.music.pause()
                 data['music_status'] = music_on
 
+        if PAUSE_RECT.collidepoint(pygame.mouse.get_pos()) and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if mode == 'game':
+                mode = 'pause'
+                pygame.mixer.music.pause()
+
+    # Отрисовываем объекты в режиме pause
+    elif mode == 'pause':
+        app.fill(FRAME_COLOR)
+        text_objects('Продолжить', FONT, 2, 2, y=-30)
+        text_objects('Выход в меню', FONT, 2, 2, y=50)
+
+        if display_objects['Продолжить'].collidepoint(event.pos) and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            mode = 'game'
+            pygame.mixer.music.unpause()
+        elif display_objects['Выход в меню'].collidepoint(event.pos) and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            mode = 'menu'
+
     # Отрисовываем объекты в режиме end
     elif mode == 'end':
         app.fill(FRAME_END)
@@ -383,11 +414,11 @@ while running:
 
         # Отрисовываем результат и кнопку "Еще раз"
         text_objects('Игра окончена. Ваш счет: ' + str(result), FONT, 2, 2, y=-30)
-        text_objects('Начать заново', FONT, 2, 2, y=50)
+        text_objects('Главное меню', FONT, 2, 2, y=50)
 
         # Добавляем проверку события MOUSEBUTTONDOWN в режиме end
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            if display_objects['Начать заново'].collidepoint(event.pos):
+            if display_objects['Главное меню'].collidepoint(event.pos):
                 start_snake()
 
     # Обновление экрана
