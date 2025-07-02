@@ -4,23 +4,32 @@ import random
 
 pygame.init()
 
-# Прописываем константы
-HEIGHT = 600
+
+# Константы
+FPS = 5
+RETURN = 1
+
+# Цвета
 FRAME_COLOR = (70, 130, 180)
 FRAME_END = (255, 0, 0)
 RECT_COLOR = (255, 255, 255)
 OTHER_RECT_COLOR = (204, 255, 255)
-SIZE_RECT = 20
-COUNT_RECTS = 20
-RETURN = 1
-WIDTH = SIZE_RECT * COUNT_RECTS + 2 * SIZE_RECT + RETURN * SIZE_RECT
-HEADER_RECT = 70
+MOUTH_COLOR = (255, 50, 50)
+SNAKE_COLOR = (30,144,255)
+EYE_COLOR = (0, 0, 0)
 HEADER_COLOR = (0, 0, 255)
 SNAKE_COLOR = (0, 128, 0)
 FOOD_COLOR = (255, 0, 0)
-FPS = 5
 
-# Загрузка кнопок
+# Размеры
+SIZE_RECT = 20
+COUNT_RECTS = 20
+HEADER_RECT = 70
+HEIGHT = 600
+WIDTH = SIZE_RECT * COUNT_RECTS + 2 * SIZE_RECT + RETURN * SIZE_RECT
+EYE_RADIUS = SIZE_RECT // 7
+
+# Загрузка изображений
 B_ON_MUSIC = pygame.image.load('images/on_music.png')
 ON_MUSIC_RECT = B_ON_MUSIC.get_rect(center=(WIDTH - 40, HEIGHT // 10 - 30))
 B_OFF_MUSIC = pygame.image.load('images/off_music.png')   
@@ -33,6 +42,7 @@ PLAY_RECT = B_PLAY.get_rect(center=(WIDTH - 100, HEIGHT // 10 - 30))
 # Шрифт текста
 FONT = pygame.font.SysFont('Arial', 40)
 FONT_SMALL = pygame.font.SysFont('Arial', 20)
+
 
 # Инициализируем звуковой модуль
 pygame.mixer.init()
@@ -65,23 +75,6 @@ except FileNotFoundError:
 # Создаем словарь для отрисовонного текста
 display_objects = {}
 
-# Функция рисования объектов
-def draw_rect(color, row, column):
-    pygame.draw.rect(app, color, (SIZE_RECT + column * SIZE_RECT + RETURN * (column + 1), 
-                                              HEADER_RECT + SIZE_RECT + row * SIZE_RECT + RETURN * (row + 1), SIZE_RECT, SIZE_RECT))
-
-def draw_sprite(sprite, x, y):
-    app.blit(sprite, (y * SIZE_RECT + RETURN * (y + 1), 
-                   HEADER_RECT + x * SIZE_RECT + RETURN * (x + 1)))
-
-# Функция проверки столкновения головы с тулловищем
-def eat_my_self(snake_rect):
-    head = snake_rect[-1]
-    for i in range(len(snake_rect) - 2):
-        if head.x == snake_rect[i].x and head.y == snake_rect[i].y:
-            return True
-    return False
-
 # Создаем класс Змеи
 class Rect:
     def __init__(self, x, y):
@@ -95,6 +88,17 @@ class Rect:
     # Проверка на нахождение в пределах змеи
     def __eq__(self, other):
         return isinstance(other, Rect) and self.x == other.x and self.y == other.y
+
+
+# Функция начальных переменных игры
+def start_snake():
+    global snake_rect, x_row, y_col, food, result, mode
+    snake_rect = [Rect(9, 9), Rect(9, 10)]
+    x_row = 0
+    y_col = 1
+    food = random_food_block()
+    result = 0
+    mode = 'menu'
 
 # Функция рандомных координат для еды
 def random_food_block():
@@ -110,17 +114,93 @@ def random_food_block():
 
     return food_block
 
-# Функция начальных переменных игры
-def start_snake():
-    global snake_rect, x_row, y_col, food, result, mode
-    snake_rect = [Rect(9, 9), Rect(9, 10)]
-    x_row = 0
-    y_col = 1
-    food = random_food_block()
-    result = 0
-    mode = 'menu'
+# Функция проверки столкновения головы с тулловищем
+def eat_my_self(snake_rect):
+    head = snake_rect[-1]
+    for i in range(len(snake_rect) - 2):
+        if head.x == snake_rect[i].x and head.y == snake_rect[i].y:
+            return True
+    return False
 
-# Отрислвываем текст и добавляем его в словарь
+# Функции рисования объектов
+def draw_rect(color, row, column, rounding_up=0, border_radii=None):
+    rect = pygame.Rect(
+        SIZE_RECT + column * SIZE_RECT + RETURN * (column + 1),
+        HEADER_RECT + SIZE_RECT + row * SIZE_RECT + RETURN * (row + 1),
+        SIZE_RECT, SIZE_RECT
+    )
+    if border_radii:
+        pygame.draw.rect(app, color, rect, border_radius=rounding_up, **border_radii)
+    else:
+        pygame.draw.rect(app, color, rect, border_radius=rounding_up)
+
+def draw_sprite(sprite, x, y):
+    
+    rect = pygame.Rect(
+        y * SIZE_RECT + RETURN * (y + 1),
+        HEADER_RECT + x * SIZE_RECT + RETURN * (x + 1),
+        SIZE_RECT, SIZE_RECT
+    )
+    app.blit(pygame.transform.scale(sprite, (SIZE_RECT, SIZE_RECT)), rect)
+
+# Функция отрисовки змеи
+def draw_snake(snake_rect):
+    # Отрисовка тела
+    for rect in snake_rect[:-1]:
+        draw_rect(SNAKE_COLOR, rect.x, rect.y, rounding_up=0)
+
+    # Отрисовка головы с округлением только с одной стороны
+    head = snake_rect[-1]
+    # Определяем направление движения
+    dx = head.x - snake_rect[-2].x
+    dy = head.y - snake_rect[-2].y
+
+    # Координаты головы
+    x = SIZE_RECT + head.y * SIZE_RECT + RETURN * (head.y + 1)
+    y = HEADER_RECT + SIZE_RECT + head.x * SIZE_RECT + RETURN * (head.x + 1)
+
+    # Радиус скругления
+    radius = 6
+
+    # По умолчанию все углы не скруглены
+    border_radii = {
+        "border_top_left_radius": 0,
+        "border_top_right_radius": 0,
+        "border_bottom_left_radius": 0,
+        "border_bottom_right_radius": 0
+    }
+
+    # Скругляем только ту сторону, куда смотрит голова
+    if dx == -1:  # вверх
+        border_radii["border_top_left_radius"] = radius
+        border_radii["border_top_right_radius"] = radius
+    elif dx == 1:  # вниз
+        border_radii["border_bottom_left_radius"] = radius
+        border_radii["border_bottom_right_radius"] = radius
+    elif dy == -1:  # влево
+        border_radii["border_top_left_radius"] = radius
+        border_radii["border_bottom_left_radius"] = radius
+    elif dy == 1:  # вправо
+        border_radii["border_top_right_radius"] = radius
+        border_radii["border_bottom_right_radius"] = radius
+
+    draw_rect(SNAKE_COLOR, head.x, head.y, border_radii=border_radii)
+
+    # Глаза
+    pygame.draw.circle(app, EYE_COLOR, (x + SIZE_RECT // 3, y + SIZE_RECT // 3), EYE_RADIUS)
+    pygame.draw.circle(app, EYE_COLOR, (x + 2 * SIZE_RECT // 3, y + SIZE_RECT // 3), EYE_RADIUS)
+
+    # Рот
+    global mouth_rect
+    mouth_rect = pygame.Rect(
+        x + SIZE_RECT // 3,
+        y + SIZE_RECT // 2,
+        SIZE_RECT // 3,
+        SIZE_RECT // 4
+    )
+
+
+# Отрисовываем текст и добавляем его в словарь
 def text_objects(text, font, a=1, b=1, x=0, y=0, size_x=WIDTH, size_y=HEIGHT):
     global display_objects
     text_display = font.render(text, 1, (255, 255, 255))
@@ -128,6 +208,7 @@ def text_objects(text, font, a=1, b=1, x=0, y=0, size_x=WIDTH, size_y=HEIGHT):
     app.blit(text_display, text_display_rect)
 
     display_objects[text] = text_display_rect
+
 
 # Вызываем функцию начальных переменных
 start_snake()
@@ -339,12 +420,10 @@ while running:
 
         # Отрисовываем яблоко
         draw_rect(FOOD_COLOR, food.x, food.y)
-        #draw_sprite(B_APPLE, food.x, food.y)
-        #app.blit(B_APPLE, (food.x * SIZE_RECT + SIZE_RECT, food.y * SIZE_RECT + HEADER_RECT + SIZE_RECT))
 
         # Отрисовываем змею
-        for rect in snake_rect:
-            draw_rect(SNAKE_COLOR, rect.x, rect.y)
+        draw_snake(snake_rect)
+        pygame.draw.arc(app, MOUTH_COLOR, mouth_rect, 3.14, 0, 2)
 
         # Определение головы змеи
         head = snake_rect[-1]
