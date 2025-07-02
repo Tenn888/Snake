@@ -123,10 +123,10 @@ def eat_my_self(snake_rect):
     return False
 
 # Функции рисования объектов
-def draw_rect(color, row, column, rounding_up=0, border_radii=None):
+def draw_rect(color, x, y, rounding_up=0, border_radii=None):
     rect = pygame.Rect(
-        SIZE_RECT + column * SIZE_RECT + RETURN * (column + 1),
-        HEADER_RECT + SIZE_RECT + row * SIZE_RECT + RETURN * (row + 1),
+        SIZE_RECT + y * SIZE_RECT + RETURN * (y + 1),
+        HEADER_RECT + SIZE_RECT + x * SIZE_RECT + RETURN * (x + 1),
         SIZE_RECT, SIZE_RECT
     )
     if border_radii:
@@ -135,13 +135,11 @@ def draw_rect(color, row, column, rounding_up=0, border_radii=None):
         pygame.draw.rect(app, color, rect, border_radius=rounding_up)
 
 def draw_sprite(sprite, x, y):
-    
     rect = pygame.Rect(
         y * SIZE_RECT + RETURN * (y + 1),
-        HEADER_RECT + x * SIZE_RECT + RETURN * (x + 1),
-        SIZE_RECT, SIZE_RECT
+        HEADER_RECT + x * SIZE_RECT + RETURN * (x + 1)
     )
-    app.blit(pygame.transform.scale(sprite, (SIZE_RECT, SIZE_RECT)), rect)
+    app.blit(sprite, rect)
 
 # Функция отрисовки змеи
 def draw_snake(snake_rect):
