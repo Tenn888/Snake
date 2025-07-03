@@ -197,6 +197,26 @@ def draw_snake(snake_rect):
         SIZE_RECT // 4
     )
 
+def draw_apple(x, y):
+    # Центр клетки
+    ax = SIZE_RECT + y * SIZE_RECT + RETURN * (y + 1) + SIZE_RECT // 2
+    ay = HEADER_RECT + SIZE_RECT + x * SIZE_RECT + RETURN * (x + 1) + SIZE_RECT // 2
+    radius = SIZE_RECT // 1.7
+
+    # Яблоко (красный круг)
+    pygame.draw.circle(app, FOOD_COLOR, (ax, ay), radius)
+
+    # Листик 
+    leaf_color = (34, 139, 34)
+    leaf_surface = pygame.Surface((16, 16), pygame.SRCALPHA)
+    leaf_rect = pygame.Rect(4, 0, 8, 12)
+    pygame.draw.ellipse(leaf_surface, leaf_color, leaf_rect)
+    # Поворачиваем листик на -30 градусов
+    rotated_leaf = pygame.transform.rotate(leaf_surface, -30)
+    # Получием координаты для размещения листика
+    leaf_pos = (ax - rotated_leaf.get_width() // 2, ay - int(radius) - 10)
+    app.blit(rotated_leaf, leaf_pos)
+
 
 # Отрисовываем текст и добавляем его в словарь
 def text_objects(text, font, a=1, b=1, x=0, y=0, size_x=WIDTH, size_y=HEIGHT):
@@ -417,7 +437,7 @@ while running:
                 draw_rect(color, row, column)
 
         # Отрисовываем яблоко
-        draw_rect(FOOD_COLOR, food.x, food.y)
+        draw_apple(food.x, food.y)
 
         # Отрисовываем змею
         draw_snake(snake_rect)
