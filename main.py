@@ -235,6 +235,7 @@ def draw_snake(snake_rect):
         SIZE_RECT // 4
     )
 
+# Функция отрисовки яблока
 def draw_apple(x, y):
     # Центр клетки
     ax = SIZE_RECT + y * SIZE_RECT + RETURN * (y + 1) + SIZE_RECT // 2
