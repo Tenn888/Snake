@@ -10,16 +10,15 @@ FPS = 5
 RETURN = 1
 
 # Цвета
-FRAME_COLOR = (70, 130, 180)
-FRAME_END = (255, 0, 0)
-RECT_COLOR = (255, 255, 255)
-OTHER_RECT_COLOR = (204, 255, 255)
-MOUTH_COLOR = (255, 50, 50)
-SNAKE_COLOR = (30,144,255)
-EYE_COLOR = (0, 0, 0)
-HEADER_COLOR = (0, 0, 255)
-SNAKE_COLOR = (0, 128, 0)
-FOOD_COLOR = (255, 0, 0)
+FRAME_COLOR = (34, 139, 34)         # Зеленый цвет поля
+FRAME_END = (255, 0, 0)             # Красный для конца игры
+RECT_COLOR = (255, 255, 255)        # Белый
+OTHER_RECT_COLOR = (204, 255, 255)  # Светло-голубой
+MOUTH_COLOR = (255, 50, 50)         # Темно-красный для рта
+SNAKE_COLOR = (30, 144, 255)        # Синий цвет змеи
+EYE_COLOR = (0, 0, 0)               # Черный для глаз
+HEADER_COLOR = (0, 0, 255)          # Синий для заголовка
+FOOD_COLOR = (255, 0, 0)            # Красный для еды
 
 # Размеры
 SIZE_RECT = 20
@@ -75,7 +74,7 @@ except FileNotFoundError:
 # Создаем словарь для отрисовонного текста
 display_objects = {}
 
-# Создаем класс Змеи
+# Создаем класс для объектов
 class Rect:
     def __init__(self, x, y):
         self.x = x
@@ -144,8 +143,48 @@ def draw_sprite(sprite, x, y):
 # Функция отрисовки змеи
 def draw_snake(snake_rect):
     # Отрисовка тела
-    for rect in snake_rect[:-1]:
+    for rect in snake_rect[1:-1]:
         draw_rect(SNAKE_COLOR, rect.x, rect.y, rounding_up=0)
+
+    # Радиусы скругления
+    radius_head = 6
+    radius_tail = 8
+
+    # По умолчанию все углы не скруглены
+    border_radii = {
+        "border_top_left_radius": 0,
+        "border_top_right_radius": 0,
+        "border_bottom_left_radius": 0,
+        "border_bottom_right_radius": 0
+    }
+
+    # Отрисовка хвоста с округлением только с одной стороны
+    tail = snake_rect[0]
+    # Определяем направление движения
+    tx = tail.x - snake_rect[1].x
+    ty = tail.y - snake_rect[1].y
+
+    # Координаты хвоста
+    x = SIZE_RECT + tail.y * SIZE_RECT + RETURN * (tail.y + 1)
+    y = HEADER_RECT + SIZE_RECT + tail.x * SIZE_RECT + RETURN * (tail.x + 1)
+
+    if tx == -1:  # вверх
+        border_radii["border_top_left_radius"] = radius_tail
+        border_radii["border_top_right_radius"] = radius_tail
+    elif tx == 1:  # вниз
+        border_radii["border_bottom_left_radius"] = radius_tail
+        border_radii["border_bottom_right_radius"] = radius_tail
+    elif ty == -1:  # влево
+        border_radii["border_bottom_left_radius"] = radius_tail
+        border_radii["border_top_left_radius"] = radius_tail
+    elif ty == 1:  # вправо
+        border_radii["border_top_right_radius"] = radius_tail
+        border_radii["border_bottom_right_radius"] = radius_tail
+    
+    draw_rect(SNAKE_COLOR, tail.x, tail.y, border_radii=border_radii)
+
+
+
 
     # Отрисовка головы с округлением только с одной стороны
     head = snake_rect[-1]
@@ -157,10 +196,7 @@ def draw_snake(snake_rect):
     x = SIZE_RECT + head.y * SIZE_RECT + RETURN * (head.y + 1)
     y = HEADER_RECT + SIZE_RECT + head.x * SIZE_RECT + RETURN * (head.x + 1)
 
-    # Радиус скругления
-    radius = 6
-
-    # По умолчанию все углы не скруглены
+    # Онуляем радиусы скругления
     border_radii = {
         "border_top_left_radius": 0,
         "border_top_right_radius": 0,
@@ -170,19 +206,21 @@ def draw_snake(snake_rect):
 
     # Скругляем только ту сторону, куда смотрит голова
     if dx == -1:  # вверх
-        border_radii["border_top_left_radius"] = radius
-        border_radii["border_top_right_radius"] = radius
+        border_radii["border_top_left_radius"] = radius_head
+        border_radii["border_top_right_radius"] = radius_head
     elif dx == 1:  # вниз
-        border_radii["border_bottom_left_radius"] = radius
-        border_radii["border_bottom_right_radius"] = radius
+        border_radii["border_bottom_left_radius"] = radius_head
+        border_radii["border_bottom_right_radius"] = radius_head
     elif dy == -1:  # влево
-        border_radii["border_top_left_radius"] = radius
-        border_radii["border_bottom_left_radius"] = radius
+        border_radii["border_top_left_radius"] = radius_head
+        border_radii["border_bottom_left_radius"] = radius_head
     elif dy == 1:  # вправо
-        border_radii["border_top_right_radius"] = radius
-        border_radii["border_bottom_right_radius"] = radius
+        border_radii["border_top_right_radius"] = radius_head
+        border_radii["border_bottom_right_radius"] = radius_head
 
     draw_rect(SNAKE_COLOR, head.x, head.y, border_radii=border_radii)
+
+
 
     # Глаза
     pygame.draw.circle(app, EYE_COLOR, (x + SIZE_RECT // 3, y + SIZE_RECT // 3), EYE_RADIUS)
