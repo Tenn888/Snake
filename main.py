@@ -542,7 +542,8 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if display_objects['Продолжить'].collidepoint(event.pos):
                 mode = 'game'
-                pygame.mixer.music.unpause()
+                if music_on:
+                    pygame.mixer.music.unpause()
             elif display_objects['Выход в меню'].collidepoint(event.pos):
                 mode = 'menu'
 
