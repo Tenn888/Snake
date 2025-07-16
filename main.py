@@ -513,20 +513,20 @@ while running:
 
         app.blit(B_PAUSE, PAUSE_RECT)
         
-        # Пауза музыки
-        if OFF_MUSIC_RECT.collidepoint(pygame.mouse.get_pos()) and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            music_on = not music_on
-            if music_on:
-                pygame.mixer.music.unpause()
-                data['music_status'] = music_on
-            else:
-                pygame.mixer.music.pause()
-                data['music_status'] = music_on
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if OFF_MUSIC_RECT.collidepoint(pygame.mouse.get_pos()):
+                music_on = not music_on
+                if music_on:
+                    pygame.mixer.music.unpause()
+                    data['music_status'] = music_on
+                else:
+                    pygame.mixer.music.pause()
+                    data['music_status'] = music_on
 
-        if PAUSE_RECT.collidepoint(pygame.mouse.get_pos()) and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            if mode == 'game':
-                mode = 'pause'
-                pygame.mixer.music.pause()
+            if PAUSE_RECT.collidepoint(pygame.mouse.get_pos()):
+                if mode == 'game':
+                    mode = 'pause'
+                    pygame.mixer.music.pause()
 
     # Отрисовываем объекты в режиме pause
     elif mode == 'pause':
@@ -534,11 +534,12 @@ while running:
         text_objects('Продолжить', FONT, 2, 2, y=-30)
         text_objects('Выход в меню', FONT, 2, 2, y=50)
 
-        if display_objects['Продолжить'].collidepoint(event.pos) and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            mode = 'game'
-            pygame.mixer.music.unpause()
-        elif display_objects['Выход в меню'].collidepoint(event.pos) and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            mode = 'menu'
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if display_objects['Продолжить'].collidepoint(event.pos):
+                mode = 'game'
+                pygame.mixer.music.unpause()
+            elif display_objects['Выход в меню'].collidepoint(event.pos):
+                mode = 'menu'
 
     # Отрисовываем объекты в режиме end
     elif mode == 'end':
