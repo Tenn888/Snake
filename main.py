@@ -256,14 +256,19 @@ def draw_apple(x, y):
     leaf_pos = (ax - rotated_leaf.get_width() // 2, ay - int(radius) - 10)
     app.blit(rotated_leaf, leaf_pos)
 
-
 # Отрисовываем текст и добавляем его в словарь
-def text_objects(text, font, a=1, b=1, x=0, y=0, size_x=WIDTH, size_y=HEIGHT):
+def draw_text(text, font, a=1, b=1, x=0, y=0, size_x=WIDTH, size_y=HEIGHT, shadow=True):
     global display_objects
     text_display = font.render(text, 1, (255, 255, 255))
     text_display_rect = text_display.get_rect(center=(size_x // a + x, size_y // b + y)) 
-    app.blit(text_display, text_display_rect)
 
+    # Тень
+    if shadow:
+        shadow_display = font.render(text, 1, (0,0,0))
+        shadow_display_rect = shadow_display.get_rect(center=(size_x // a + x + 2, size_y // b + y + 2))
+        app.blit(shadow_display, shadow_display_rect)
+    
+    app.blit(text_display, text_display_rect)
     display_objects[text] = text_display_rect
 
 
@@ -360,10 +365,10 @@ while running:
         app.fill(FRAME_COLOR)
 
         # Отрисовываем кнопку "FAQ"
-        text_objects('FAQ', FONT, 10, 10,)
+        draw_text('FAQ', FONT, 10, 10,)
 
         # Отрисовываем ryjgre "Играть"
-        text_objects('Играть', FONT, a=4, b=2, x=115, y=-50)
+        draw_text('Играть', FONT, a=4, b=2, x=115, y=-50)
 
         # Пауза музыки
         pygame.mixer.music.pause()
@@ -374,15 +379,15 @@ while running:
         app.fill(FRAME_COLOR)
 
         # Отрисовываем кнопку "Назад"
-        text_objects('Назад', FONT, a=10, b=9, x=4, y=300)
+        draw_text('Назад', FONT, a=10, b=9, x=4, y=300)
 
         # Отрисовываем текст
-        text_objects('Выберите сложность игры', FONT, a=2, b=2, x=-7, y=-150)
+        draw_text('Выберите сложность игры', FONT, a=2, b=2, x=-7, y=-150)
 
         # Отрисовываем кнопки
-        text_objects('Легко', FONT, a=4, b=2, x=-50, y=-50)
-        text_objects('Средне', FONT, a=4, b=2, x=100, y=-50)
-        text_objects('Сложно', FONT, a=4, b=2, x=250, y=-50)
+        draw_text('Легко', FONT, a=4, b=2, x=-50, y=-50)
+        draw_text('Средне', FONT, a=4, b=2, x=100, y=-50)
+        draw_text('Сложно', FONT, a=4, b=2, x=250, y=-50)
         
     # Отрисовываем объекты в FAQ
     elif mode == 'faq':
@@ -390,16 +395,16 @@ while running:
         app.fill(FRAME_COLOR)
 
         # Отрисовываем кнопку "Главное меню"
-        text_objects('Главное меню', FONT, 10, 10, 70, 0)
+        draw_text('Главное меню', FONT, 10, 10, 70, 0)
 
         # Отрисовываем кнопку "Игра"
-        text_objects('Игра', FONT, 10, 9, -4, 50)
+        draw_text('Игра', FONT, 10, 9, -4, 50)
 
         # Отрисовываем кнопку "Сложность"
-        text_objects('Сложность', FONT, 10, 9, 40, 100)
+        draw_text('Сложность', FONT, 10, 9, 40, 100)
 
         # Отрисовываем кнопку "Назад"
-        text_objects('Назад', FONT, 10, 9, 4, 300)
+        draw_text('Назад', FONT, 10, 9, 4, 300)
 
     # Отрисовываем объекты в FAQ_GAME
     elif mode == 'faq_game':
@@ -417,10 +422,10 @@ while running:
         
         # Отрисовываем текст
         for i, line in enumerate(faq_game_list):
-            text_objects(line, FONT_SMALL, a=2, b=4, y=i * 40)
+            draw_text(line, FONT_SMALL, a=2, b=4, y=i * 40)
 
         # Отрисовываем кнопку "Назад"
-        text_objects('Назад', FONT, a=10, b=9, x=4, y=300)
+        draw_text('Назад', FONT, a=10, b=9, x=4, y=300)
 
     # Отрисовываем объекты в FAQ_MENU
     elif mode == 'faq_menu':
@@ -435,10 +440,10 @@ while running:
 
         # Отрисовываем текст
         for i, line in enumerate(faq_menu_list):
-            text_objects(line, FONT_SMALL, a=2, b=4, y=i * 40)
+            draw_text(line, FONT_SMALL, a=2, b=4, y=i * 40)
         
         # Отрисовываем кнопку "Назад"
-        text_objects('Назад', FONT, a=10, b=9, x=4, y=300)
+        draw_text('Назад', FONT, a=10, b=9, x=4, y=300)
 
     elif mode == 'faq_complexity':
         # Заполняем фон цветом
@@ -454,10 +459,10 @@ while running:
 
         # Отрисовываем текст
         for i, line in enumerate(faq_complexity_list):
-            text_objects(line, FONT_SMALL, a=2, b=4, y=i * 40)
+            draw_text(line, FONT_SMALL, a=2, b=4, y=i * 40)
 
         # Отрисовываем кнопку "Назад"
-        text_objects('Назад', FONT, a=10, b=9, x=4, y=300)
+        draw_text('Назад', FONT, a=10, b=9, x=4, y=300)
 
     # Отрисовываем объекты в режиме game
     elif mode == 'game':
@@ -502,8 +507,8 @@ while running:
         snake_rect.pop(0)
         
         # Отрисовываем текст
-        text_objects(f'Очки: {result}', FONT, x=40, y=-5, size_x=SIZE_RECT, size_y=SIZE_RECT)
-        text_objects(f'Рекорд: {data['record']}', FONT, x=66, y=35, size_x=SIZE_RECT, size_y=SIZE_RECT)
+        draw_text(f'Очки: {result}', FONT, x=40, y=-5, size_x=SIZE_RECT, size_y=SIZE_RECT)
+        draw_text(f'Рекорд: {data['record']}', FONT, x=66, y=35, size_x=SIZE_RECT, size_y=SIZE_RECT)
 
         # Проверка на включение/выключение музыки
         if music_on:
@@ -531,8 +536,8 @@ while running:
     # Отрисовываем объекты в режиме pause
     elif mode == 'pause':
         app.fill(FRAME_COLOR)
-        text_objects('Продолжить', FONT, 2, 2, y=-30)
-        text_objects('Выход в меню', FONT, 2, 2, y=50)
+        draw_text('Продолжить', FONT, 2, 2, y=-30)
+        draw_text('Выход в меню', FONT, 2, 2, y=50)
 
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if display_objects['Продолжить'].collidepoint(event.pos):
@@ -550,8 +555,8 @@ while running:
             data['record'] = result
 
         # Отрисовываем результат и кнопку "Еще раз"
-        text_objects('Игра окончена. Ваш счет: ' + str(result), FONT, 2, 2, y=-30)
-        text_objects('Главное меню', FONT, 2, 2, y=50)
+        draw_text('Игра окончена. Ваш счет: ' + str(result), FONT, 2, 2, y=-30)
+        draw_text('Главное меню', FONT, 2, 2, y=50)
 
         # Добавляем проверку события MOUSEBUTTONDOWN в режиме end
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
