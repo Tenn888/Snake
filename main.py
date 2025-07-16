@@ -30,9 +30,8 @@ EYE_RADIUS = SIZE_RECT // 7
 
 # Загрузка изображений
 B_ON_MUSIC = pygame.image.load('images/on_music.png')
-ON_MUSIC_RECT = B_ON_MUSIC.get_rect(center=(WIDTH - 40, HEIGHT // 10 - 30))
 B_OFF_MUSIC = pygame.image.load('images/off_music.png')   
-OFF_MUSIC_RECT = B_ON_MUSIC.get_rect(center=(WIDTH - 40, HEIGHT // 10 - 30))
+B_MUSIC_RECT = B_ON_MUSIC.get_rect(center=(WIDTH - 40, HEIGHT // 10 - 30))
 B_PAUSE = pygame.image.load('images/pause.png')
 PAUSE_RECT = B_PAUSE.get_rect(center=(WIDTH - 100, HEIGHT // 10 - 30))
 B_PLAY = pygame.image.load('images/play.png')
@@ -98,6 +97,17 @@ def start_snake():
     food = random_food_block()
     result = 0
     mode = 'menu'
+
+# Блок управления музыкой
+def update_music_state():
+    # Включает или выключает музыку в зависимости от режима и состояния music_on
+    if mode == 'game' and music_on:
+        if not pygame.mixer.music.get_busy():
+            pygame.mixer.music.play(loops=-1)
+        else:
+            pygame.mixer.music.unpause()
+    else:
+        pygame.mixer.music.pause()
 
 # Функция рандомных координат для еды
 def random_food_block():
@@ -294,22 +304,20 @@ while running:
                 elif display_objects['FAQ'].collidepoint(event.pos):
                     mode = 'faq'
 
+            # Проверка на нажатие кнопок в режиме game
             elif mode == 'game_complexity':
                 if display_objects['Легко'].collidepoint(event.pos):
                     FPS = 5
                     mode = 'game'
-                    if music_on:
-                        pygame.mixer.music.play(loops=-1)
+                    update_music_state()
                 elif display_objects['Средне'].collidepoint(event.pos):
                     FPS = 10
                     mode = 'game'
-                    if music_on:
-                        pygame.mixer.music.play(loops=-1)
+                    update_music_state()
                 elif display_objects['Сложно'].collidepoint(event.pos):
                     FPS = 15
                     mode = 'game'
-                    if music_on:
-                        pygame.mixer.music.play(loops=-1)
+                    update_music_state()
                 elif display_objects['Назад'].collidepoint(event.pos):
                     mode = 'menu'
 
@@ -334,15 +342,123 @@ while running:
                 if display_objects['Назад'].collidepoint(event.pos):
                     mode = 'faq'
 
+            # Проверка на нажатие кнопок в FAQ_COMPLEXITY
             elif mode == 'faq_complexity':
                 if display_objects['Назад'].collidepoint(event.pos):
                     mode = 'faq'
 
+            # Проверка на нажатие кнопок в режиме game
+            elif mode == 'game':
+                if B_MUSIC_RECT.collidepoint(pygame.mouse.get_pos()):
+                    music_on = not music_on
+                    data['music_status'] = music_on
+                    update_music_state()
+
+                if PAUSE_RECT.collidepoint(pygame.mouse.get_pos()):
+                    mode = 'pause'
+                    update_music_state()
+            
+            # Проверка на нажатие кнопок в режиме pause
+            elif mode == 'pause':
+                if display_objects['Продолжить'].collidepoint(event.pos):
+                    mode = 'game'
+                    update_music_state()
+                elif display_objects['Выход в меню'].collidepoint(event.pos):
+                    mode = 'menu'
+                    update_music_state()
+
+            # Проверка на нажатие кнопок в режиме end
+            elif mode == 'end':
+                if display_objects['Главное меню'].collidepoint(event.pos):
+                    start_snake()
+
         elif event.type == pygame.KEYDOWN:
 
-            if mode == 'end' and event.key == pygame.K_r:
-                # Сброс игры
-                start_snake()
+            # Проверка на нажатие клавиш в режиме menu
+            if mode == 'menu':
+                if event.key == pygame.K_SPACE:
+                    # Переход к игре
+                    mode = 'game_complexity'
+                elif event.key == pygame.K_f:
+                    # Переход к FAQ
+                    mode = 'faq'
+
+            # Проверка на нажатие клавиш в режиме FAQ
+            elif mode == 'faq':
+                # Переход в меню
+                if event.key == pygame.K_ESCAPE:
+                    mode = 'menu'
+                # Переход к FAQ
+                elif event.key == pygame.K_1:
+                    mode = 'faq_game'
+                elif event.key == pygame.K_2:
+                    mode = 'faq_menu'
+                elif event.key == pygame.K_3:
+                    mode = 'faq_complexity'
+
+            # Проверка на нажатие клавиш в режиме FAQ_GAME
+            elif mode == 'faq_game':
+                # Переход в FAQ
+                if event.key == pygame.K_ESCAPE:
+                    mode = 'faq'
+            
+            # Проверка на нажатие клавиш в режиме FAQ_MENU
+            elif mode == 'faq_menu':
+                # Переход в FAQ
+                if event.key == pygame.K_ESCAPE:
+                    mode = 'faq'
+
+            # Проверка на нажатие клавиш в режиме FAQ_COMPLEXITY
+            elif mode == 'faq_complexity':
+                # Переход в FAQ
+                if event.key == pygame.K_ESCAPE:
+                    mode = 'faq'
+
+            # Проверка на нажатие клавиш в режиме game_complexity
+            elif mode == 'game_complexity':
+                # Переход в меню
+                if event.key == pygame.K_ESCAPE:
+                    mode = 'menu'
+                # Выбор сложности игры
+                elif event.key == pygame.K_1:
+                    FPS = 5
+                    mode = 'game'
+                    update_music_state()
+                elif event.key == pygame.K_2:
+                    FPS = 10
+                    mode = 'game'
+                    update_music_state()
+                elif event.key == pygame.K_3:
+                    FPS = 15
+                    mode = 'game'
+                    update_music_state()
+            
+            # Проверка на нажатие клавиш в режиме game
+            elif mode == 'game':
+                # Управление музыкой
+                if event.key == pygame.K_m:
+                    music_on = not music_on
+                    data['music_status'] = music_on
+                    update_music_state()
+
+                if event.key == pygame.K_SPACE:
+                    mode = 'pause'
+                    pygame.mixer.music.pause()
+
+            # Проверка на нажатие клавиш в режиме pause
+            elif mode == 'pause':
+                if event.key == pygame.K_SPACE:
+                    mode = 'game'
+                    update_music_state()
+                elif event.key == pygame.K_q:
+                    mode = 'menu'
+                    update_music_state()
+
+            # Проверка на нажатие клавиш в режиме end
+            elif mode == 'end':
+                if event.key == pygame.K_r:
+                    # Сброс игры
+                    start_snake()
 
             # Управление змейкой
             if event.key in (pygame.K_UP, pygame.K_w) and y_col != 0:
@@ -367,7 +483,7 @@ while running:
         # Отрисовываем кнопку "FAQ"
         draw_text('FAQ', FONT, 10, 10,)
 
-        # Отрисовываем ryjgre "Играть"
+        # Отрисовываем кнопку "Играть"
         draw_text('Играть', FONT, a=4, b=2, x=115, y=-50)
 
         # Пауза музыки
@@ -445,6 +561,7 @@ while running:
         # Отрисовываем кнопку "Назад"
         draw_text('Назад', FONT, a=10, b=9, x=4, y=300)
 
+    # Отрисовываем объекты в FAQ_COMPLEXITY
     elif mode == 'faq_complexity':
         # Заполняем фон цветом
         app.fill(FRAME_COLOR)
@@ -510,42 +627,19 @@ while running:
         draw_text(f'Очки: {result}', FONT, x=40, y=-5, size_x=SIZE_RECT, size_y=SIZE_RECT)
         draw_text(f'Рекорд: {data['record']}', FONT, x=66, y=35, size_x=SIZE_RECT, size_y=SIZE_RECT)
 
-        # Проверка на включение/выключение музыки
+        # Проверка на включение/выключение музыки и отрисовка необходимых кнопок
         if music_on:
-            app.blit(B_ON_MUSIC, ON_MUSIC_RECT)
+            app.blit(B_ON_MUSIC, B_MUSIC_RECT)
         else:
-            app.blit(B_OFF_MUSIC, OFF_MUSIC_RECT)
+            app.blit(B_OFF_MUSIC, B_MUSIC_RECT)
 
         app.blit(B_PAUSE, PAUSE_RECT)
-        
-        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            if OFF_MUSIC_RECT.collidepoint(pygame.mouse.get_pos()):
-                music_on = not music_on
-                if music_on:
-                    pygame.mixer.music.unpause()
-                    data['music_status'] = music_on
-                else:
-                    pygame.mixer.music.pause()
-                    data['music_status'] = music_on
-
-            if PAUSE_RECT.collidepoint(pygame.mouse.get_pos()):
-                if mode == 'game':
-                    mode = 'pause'
-                    pygame.mixer.music.pause()
 
     # Отрисовываем объекты в режиме pause
     elif mode == 'pause':
         app.fill(FRAME_COLOR)
         draw_text('Продолжить', FONT, 2, 2, y=-30)
         draw_text('Выход в меню', FONT, 2, 2, y=50)
-
-        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            if display_objects['Продолжить'].collidepoint(event.pos):
-                mode = 'game'
-                if music_on:
-                    pygame.mixer.music.unpause()
-            elif display_objects['Выход в меню'].collidepoint(event.pos):
-                mode = 'menu'
 
     # Отрисовываем объекты в режиме end
     elif mode == 'end':
@@ -558,11 +652,6 @@ while running:
         # Отрисовываем результат и кнопку "Еще раз"
         draw_text('Игра окончена. Ваш счет: ' + str(result), FONT, 2, 2, y=-30)
         draw_text('Главное меню', FONT, 2, 2, y=50)
-
-        # Добавляем проверку события MOUSEBUTTONDOWN в режиме end
-        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            if display_objects['Главное меню'].collidepoint(event.pos):
-                start_snake()
 
     # Обновление экрана
     pygame.display.update()
