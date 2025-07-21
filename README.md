@@ -1,44 +1,82 @@
-# Snake
+<p align="center">
+    <a href="README.en.md">🇺🇸 English</a>
+</p>
 
-This is a simple Snake game implemented in Python.
+<h1 align="center">🐍 Snake Game</h1>
 
-## Description
+<p align="center">
+  <b>Классическая игра «Змейка» на Python с графикой на Pygame.</b>
+</p>
 
-The Snake game is a classic arcade game where the player controls a snake that moves around the screen, eating food to grow longer. The objective is to make the snake as long as possible without running into the walls or itself.
+---
 
-## Features
+## 📜 Описание
 
-- Classic Snake gameplay
-- Simple and intuitive controls
-- Score tracking
+**Змейка** — это аркадная игра, в которой вы управляете змейкой, поедающей яблоки и растущей с каждым съеденным фруктом. Ваша задача — набрать как можно больше очков, не столкнувшись со стеной или собственным хвостом.
 
-## Installation
+---
 
-1. Install Python
-2. Download from the Release section
+## 🚀 Возможности
 
-## Usage
+- 🎮 Классический геймплей
+- 🎵 Фоновая музыка
+- 👀 Красочная графика и анимация
+- 📈 Система рекордов
+- 🕹️ Простое управление
 
-To start the game, run the following command:
-```sh
-python main.py
-```
+---
 
-## Controls
+## 💾 Использование
 
-- Arrow keys to move the snake
+1. Установите [Python](https://www.python.org/downloads/), если он ещё не установлен.
+2. Установите необходимые зависимости:
+    ```sh
+    pip install pygame
+    ```
+3. Скачайте архив с исходным кодом  
+    **или** клонируйте репозиторий командой:
+    ```sh
+    git clone https://github.com/Tenn888/Snake.git
+    ```
 
-## Files
+---
 
-- main.py responsible for the operation of the entire program
-- button_1.png, button_2.png, button_3.png rendering buttons in the menu
-- Music.mp3 - music in the background of the program
+## ▶️ Как начать играть
+
+1. Скачайте архив из раздела [Releases](https://github.com/your-repo/Snake/releases) и распакуйте его
+2. Запустите `Snake.exe` и наслаждайтесь игрой!
 
 
-## Contributing
+---
 
-Contributions are welcome! Please open an issue or submit a pull request for any changes.
+## 🎮 Управление
 
-## Acknowledgements
+- **Стрелки** или **WASD** — движение змейки
+- **Мышь** — навигация по меню
 
-- Inspired by the classic Snake game
+---
+
+## 📁 Структура проекта
+
+- `main.py` — основной игровой файл
+- `images/` — папка с кнопками
+- `Music.mp3` — фоновая музыка
+- `data.json` — файл для хранения рекорда и настроек
+
+---
+
+## 🤝 Вклад
+
+Будем рады вашим идеям и улучшениям!  
+Открывайте issues или отправляйте pull requests.
+
+---
+
+## 🙏 Благодарности
+
+- Вдохновлено классической игрой «Змейка»
+- Спасибо [Pygame](https://www.pygame.org/) за отличный фреймворк
+
+---
+
+> _Удачной игры!_
